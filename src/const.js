@@ -1,0 +1,1 @@
+export const DESCRIPTION_MAX_LETTERS = 139;
