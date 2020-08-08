@@ -1,4 +1,5 @@
 import {getRandomInteger} from '../utils.js';
+import {MINUTES_IN_HOUR} from '../const.js';
 
 const Descriptions = {
   MIN: 1,
@@ -42,31 +43,33 @@ const Runtime = {
   MAX: 120,
 };
 
-const MINUTES_IN_HOUR = 60;
+const AgeRating = {
+  MIN: 13,
+  MAX: 18,
+};
 
-export const getRandomfractional = (a = 0, b = 1) => {
+export const getRandomFractional = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
 
   return (lower + Math.random() * (upper - lower)).toFixed(1);
 };
 
-const getRandomArrayElement = (array) => {
+const getRandomElement = (array) => {
   return array[getRandomInteger(0, array.length - 1)];
 };
 
-const generateRandomArrayItems = (array, itemsCount) => {
-  const itemsSet = new Set();
-  let counter = 0;
-  while (counter < itemsCount) {
-    const setSize = itemsSet.size;
-    itemsSet.add(getRandomArrayElement(array));
-    if (itemsSet.size > setSize) {
-      counter += 1;
+const getRandomItemsCount = (itemsList, itemsCount) => {
+  const items = itemsList.slice();
+  const shuffle = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
-  }
+    return array;
+  };
 
-  return [...itemsSet];
+  return shuffle(items).slice(0, itemsCount);
 };
 
 const getRandomBoolean = () => {
@@ -101,7 +104,7 @@ const commentNames = [
   `Sergey Brin`,
 ];
 
-const commentText = [
+const commentTexts = [
   `Almost two hours? Seriously?`,
   `Very very old. Meh`,
   `Booooooooooring`,
@@ -128,9 +131,9 @@ const generateDateTime = () => {
 
 const generateComment = () => {
   return {
-    text: getRandomArrayElement(commentText),
-    emoji: getRandomArrayElement(commentEmojis),
-    name: getRandomArrayElement(commentNames),
+    text: getRandomElement(commentTexts),
+    emoji: getRandomElement(commentEmojis),
+    name: getRandomElement(commentNames),
     date: generateDateTime(),
   };
 };
@@ -183,21 +186,21 @@ const actorsList = [
 ];
 
 export const generateFilm = () => {
-  const filmTitle = getRandomArrayElement(filmTitles);
+  const filmTitle = getRandomElement(filmTitles);
   const descriptionsCount = getRandomInteger(Descriptions.MIN, Descriptions.MAX);
-  const descriptions = generateRandomArrayItems(filmDescriptions, descriptionsCount);
+  const description = getRandomItemsCount(filmDescriptions, descriptionsCount).join(` `);
   const commentsCount = getRandomInteger(Comments.MIN, Comments.MAX);
   const comments = Array(commentsCount).fill(``).map(generateComment);
   const pictureUrl = filmTitle.toLowerCase().split(` `).join(`-`);
   const genresCount = getRandomInteger(Genres.MIN, Genres.MAX);
-  const genres = generateRandomArrayItems(genresList, genresCount);
-  const director = getRandomArrayElement(directorsList);
+  const genres = getRandomItemsCount(genresList, genresCount);
+  const director = getRandomElement(directorsList);
   const writersCount = getRandomInteger(Writers.MIN, Writers.MAX);
-  const writers = generateRandomArrayItems(writersList, writersCount);
-  const country = getRandomArrayElement(countriesList);
+  const writers = getRandomItemsCount(writersList, writersCount).join(`, `);
+  const country = getRandomElement(countriesList);
   const actorsCount = getRandomInteger(Actors.MIN, Actors.MAX);
-  const actors = generateRandomArrayItems(actorsList, actorsCount);
-  const rating = getRandomfractional(Rating.MIN, Rating.MAX);
+  const actors = getRandomItemsCount(actorsList, actorsCount).join(`, `);
+  const rating = getRandomFractional(Rating.MIN, Rating.MAX);
   const isViewed = getRandomBoolean();
   const isFavorited = getRandomBoolean();
   const isInWatchList = getRandomBoolean();
@@ -205,10 +208,11 @@ export const generateFilm = () => {
   const runTimeMinutes = getRandomInteger(Runtime.MIN, Runtime.MAX);
   const runTimeHours = Math.floor(runTimeMinutes / MINUTES_IN_HOUR);
   const runTime = `${runTimeHours}h ${runTimeMinutes % MINUTES_IN_HOUR}m`;
+  const ageRating = getRandomInteger(AgeRating.MIN, AgeRating.MAX);
 
   return {
     filmTitle,
-    descriptions,
+    description,
     comments,
     pictureUrl,
     genres,
@@ -222,5 +226,6 @@ export const generateFilm = () => {
     isInWatchList,
     releaseDate,
     runTime,
+    ageRating,
   };
 };

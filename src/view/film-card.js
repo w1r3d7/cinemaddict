@@ -1,12 +1,12 @@
 import {DESCRIPTION_MAX_LETTERS} from '../const.js';
 
 export const createFilmCardTemplate = (film) => {
-  const {pictureUrl, filmTitle, descriptions, comments, rating, genres, releaseDate, isViewed, isInWatchList, isFavorited, runTime} = film;
+  const {pictureUrl, filmTitle, description, comments, rating, genres, releaseDate, isViewed, isInWatchList, isFavorited, runTime} = film;
 
-  let descriptionsList = descriptions.join(` `);
+  let descriptionText = description;
 
-  if (descriptionsList.length > DESCRIPTION_MAX_LETTERS) {
-    descriptionsList = descriptionsList.slice(0, DESCRIPTION_MAX_LETTERS) + `…`;
+  if (descriptionText.length > DESCRIPTION_MAX_LETTERS) {
+    descriptionText = descriptionText.slice(0, DESCRIPTION_MAX_LETTERS) + `…`;
   }
 
   const addActiveClass = (item) => {
@@ -24,7 +24,7 @@ export const createFilmCardTemplate = (film) => {
             <span class="film-card__genre">${mainGenre}</span>
           </p>
           <img src="./images/posters/${pictureUrl}.jpg" alt="${filmTitle}" class="film-card__poster">
-          <p class="film-card__description">${descriptionsList}</p>
+          <p class="film-card__description">${descriptionText}</p>
           <a class="film-card__comments">${comments.length} comments</a>
           <form class="film-card__controls">
             <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${addActiveClass(isInWatchList)}">Add to watchlist</button>

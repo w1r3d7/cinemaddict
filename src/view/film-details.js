@@ -25,8 +25,12 @@ const createGenreTemplate = (genre) => {
   return `<span class="film-details__genre">${genre}</span>`;
 };
 
+const isManyGenres = (genres) => {
+  return genres.length > 1;
+};
+
 export const createFilmDetailsTemplate = (film) => {
-  const {filmTitle, descriptions, comments, pictureUrl, genres, director, writers, country, actors, rating, isViewed, isInWatchList, isFavorited, releaseDate, runTime} = film;
+  const {filmTitle, description, comments, pictureUrl, genres, director, writers, country, actors, rating, isViewed, isInWatchList, isFavorited, releaseDate, runTime, ageRating} = film;
 
   const genreList = generateTemplate(genres, createGenreTemplate);
 
@@ -47,8 +51,7 @@ export const createFilmDetailsTemplate = (film) => {
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
           <img class="film-details__poster-img" src="./images/posters/${pictureUrl}.jpg" alt="${filmTitle}">
-
-          <p class="film-details__age">18+</p>
+          <p class="film-details__age">${ageRating}+</p>
         </div>
 
         <div class="film-details__info">
@@ -70,11 +73,11 @@ export const createFilmDetailsTemplate = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${writers.join(`, `)}</td>
+              <td class="film-details__cell">${writers}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${actors.join(`, `)}</td>
+              <td class="film-details__cell">${actors}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
@@ -89,7 +92,7 @@ export const createFilmDetailsTemplate = (film) => {
               <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">${isManyGenres(genres) ? `Genres` : `Genre`}</td>
               <td class="film-details__cell">
                 ${genreList}
               </td>
@@ -97,7 +100,7 @@ export const createFilmDetailsTemplate = (film) => {
           </table>
 
           <p class="film-details__film-description">
-            ${descriptions.join(` `)}
+            ${description}
           </p>
         </div>
       </div>
