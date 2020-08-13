@@ -1,4 +1,4 @@
-import {humanizeDate} from '../utils.js';
+import {humanizeDate, createElement} from '../utils.js';
 
 const generateTemplate = (data, template) => {
   return data.map((it) => template(it)).join(``);
@@ -29,7 +29,7 @@ const isManyGenres = (genres) => {
   return genres.length > 1;
 };
 
-export const createFilmDetailsTemplate = (film) => {
+const createFilmDetailsTemplate = (film) => {
   const {filmTitle, description, comments, pictureUrl, genres, director, writers, country, actors, rating, isViewed, isInWatchList, isFavorited, releaseDate, runTime, ageRating} = film;
 
   const genreList = generateTemplate(genres, createGenreTemplate);
@@ -159,3 +159,27 @@ export const createFilmDetailsTemplate = (film) => {
   </form>
 </section>`;
 };
+
+
+export default class FilmDetails {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  _getTemplate() {
+    return createFilmDetailsTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this._getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

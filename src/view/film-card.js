@@ -1,6 +1,7 @@
 import {DESCRIPTION_MAX_LETTERS} from '../const.js';
+import {createElement} from '../utils.js';
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {pictureUrl, filmTitle, description, comments, rating, genres, releaseDate, isViewed, isInWatchList, isFavorited, runTime} = film;
 
   let descriptionText = description;
@@ -33,3 +34,26 @@ export const createFilmCardTemplate = (film) => {
           </form>
         </article>`;
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._element = null;
+    this._film = film;
+  }
+
+  _getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this._getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
