@@ -1,11 +1,13 @@
-export const createUserProfileTemplate = (moviesWatch) => {
+import {createElement} from '../utils.js';
+
+const createUserProfileTemplate = (filmsViewed) => {
   let rank = ``;
 
-  if (moviesWatch > 0 && moviesWatch < 11) {
+  if (filmsViewed > 0 && filmsViewed < 11) {
     rank = `novice`;
-  } else if (moviesWatch > 10 && moviesWatch < 21) {
+  } else if (filmsViewed > 10 && filmsViewed < 21) {
     rank = `fan`;
-  } else if (moviesWatch > 20) {
+  } else if (filmsViewed > 20) {
     rank = `movie buff`;
   }
 
@@ -14,3 +16,26 @@ export const createUserProfileTemplate = (moviesWatch) => {
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>`;
 };
+
+export default class UserProfile {
+  constructor(filmsViewed) {
+    this._element = null;
+    this._filmsViewed = filmsViewed;
+  }
+
+  _getTemplate() {
+    return createUserProfileTemplate(this._filmsViewed);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this._getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
