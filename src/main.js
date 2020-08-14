@@ -1,4 +1,4 @@
-import {render} from './utils.js';
+import {render} from './utils/render.js';
 import UserProfileView from './view/user-profile.js';
 import SiteMenuView from './view/site-menu.js';
 import FilmsSortingView from './view/films-sorting.js';
@@ -31,16 +31,15 @@ const siteMainElement = siteBodyElement.querySelector(`.main`);
 const siteFooterElement = siteBodyElement.querySelector(`.footer`);
 
 
-render(siteHeaderElement, new UserProfileView(filmsViewed).getElement());
-render(siteMainElement, new SiteMenuView(filter).getElement());
-render(siteMainElement, new FilmsSortingView().getElement());
-render(siteMainElement, new FilmsContainerView().getElement());
+render(siteHeaderElement, new UserProfileView(filmsViewed));
+render(siteMainElement, new SiteMenuView(filter));
+render(siteMainElement, new FilmsSortingView());
+render(siteMainElement, new FilmsContainerView());
 const filmsContainerElement = siteMainElement.querySelector(`.films`);
 
 const renderFilmDetails = (film) => {
   const filmDetailsComponent = new FilmDetailsView(film);
   const filmDetailsElement = filmDetailsComponent.getElement();
-  const filmDetailsCloseButton = filmDetailsElement.querySelector(`.film-details__close-btn`);
   const filmDetailsCommentArea = filmDetailsElement.querySelector(`.film-details__comment-input`);
 
   filmDetailsCommentArea.addEventListener(`keydown`, (evt) => {
@@ -61,7 +60,7 @@ const renderFilmDetails = (film) => {
 
   document.addEventListener(`keydown`, onEscKeyDown);
 
-  filmDetailsCloseButton.addEventListener(`click`, () => {
+  filmDetailsComponent.setClickHandler(() => {
     closeFilmDetails();
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
@@ -70,10 +69,7 @@ const renderFilmDetails = (film) => {
 };
 
 const renderFilm = (container, film) => {
-  const filmCardComponent = new FilmCardView(film).getElement();
-  const filmCardPoster = filmCardComponent.querySelector(`.film-card__poster`);
-  const filmCardTitle = filmCardComponent.querySelector(`.film-card__title`);
-  const filmCardComments = filmCardComponent.querySelector(`.film-card__comments`);
+  const filmCardComponent = new FilmCardView(film);
 
   const checkIfFilmDetailsRenderedOnce = () => {
     const filmDetails = siteBodyElement.querySelector(`.film-details`);
@@ -82,16 +78,12 @@ const renderFilm = (container, film) => {
     }
   };
 
-  const onFilmCardClick = (evt) => {
-    evt.preventDefault();
+  const onFilmCardClick = () => {
     checkIfFilmDetailsRenderedOnce();
     renderFilmDetails(film);
   };
 
-  [filmCardPoster, filmCardTitle, filmCardComments].forEach((filmCardItem) => {
-    filmCardItem.addEventListener(`click`, onFilmCardClick);
-  });
-
+  filmCardComponent.setClickHandler(onFilmCardClick);
   render(container, filmCardComponent);
 };
 

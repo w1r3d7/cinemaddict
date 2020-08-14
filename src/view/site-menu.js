@@ -1,4 +1,5 @@
-import {createElement, setFirstLetterToUpperCase} from '../utils.js';
+import {setFirstLetterToUpperCase} from '../utils/common.js';
+import AbstractView from "./abstract.js";
 
 const createSiteMenuTemplate = (filters) => {
   const createFilterTemplate = (filterItem) => {
@@ -18,25 +19,13 @@ const createSiteMenuTemplate = (filters) => {
 };
 
 
-export default class SiteMenu {
+export default class SiteMenu extends AbstractView {
   constructor(filters) {
-    this._element = null;
+    super();
     this._filters = filters;
   }
 
   _getTemplate() {
     return createSiteMenuTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

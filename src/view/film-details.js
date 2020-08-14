@@ -1,4 +1,5 @@
-import {humanizeDate, createElement} from '../utils.js';
+import {humanizeDate} from '../utils/common.js';
+import AbstractView from "./abstract.js";
 
 const generateTemplate = (data, template) => {
   return data.map((it) => template(it)).join(``);
@@ -161,25 +162,25 @@ const createFilmDetailsTemplate = (film) => {
 };
 
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   _getTemplate() {
     return createFilmDetailsTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    const filmDetailsCloseButton = this.getElement().querySelector(`.film-details__close-btn`);
+    filmDetailsCloseButton.addEventListener(`click`, this._clickHandler);
   }
 }
