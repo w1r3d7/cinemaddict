@@ -29,3 +29,8 @@ export const createElement = (template) => {
   tempContainer.insertAdjacentHTML(RenderPlace.AFTERBEGIN, template);
   return tempContainer.firstChild;
 };
+
+export const removeComponent = (component) => {
+  component.getElement().remove();
+  component.removeElement();
+};
