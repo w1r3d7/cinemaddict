@@ -5,7 +5,7 @@ import FilmCardView from '../view/film-card.js';
 import LoadMoreButtonView from '../view/load-more-button.js';
 import FilmDetailsView from '../view/film-details.js';
 import NoFilmsView from '../view/no-films.js';
-import {render, removeComponent} from "../utils/render.js";
+import {render, removeComponent} from '../utils/render.js';
 
 const TOP_FILM_COUNTER = 2;
 const ESCAPE_KEY = `Escape`;

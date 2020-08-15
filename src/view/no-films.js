@@ -1,4 +1,4 @@
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const createNoFilmsTemplate = () => {
   return `<section class="films-list">

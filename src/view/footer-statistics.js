@@ -1,16 +1,16 @@
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
-const createFooterStatisticTemplate = (filmsWatch) => {
+const createFooterStatisticsTemplate = (filmsWatch) => {
   return `<section class="footer__statistics">${filmsWatch}</section>`;
 };
 
-export default class FooterStatisctics extends AbstractView {
+export default class FooterStatistics extends AbstractView {
   constructor(filmsWatch) {
     super();
     this._filmsWatch = filmsWatch;
   }
 
   _getTemplate() {
-    return createFooterStatisticTemplate(this._filmsWatch);
+    return createFooterStatisticsTemplate(this._filmsWatch);
   }
 }

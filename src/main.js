@@ -4,7 +4,7 @@ import SiteMenuView from './view/site-menu.js';
 import FilmsSortingView from './view/films-sorting.js';
 import FilmsContainerView from './view/films-container.js';
 import FilmsListPresenter from './presenter/films-list';
-import FooterStatiscticsView from './view/footer-statistics.js';
+import FooterStatisticsView from './view/footer-statistics.js';
 import {generateFilm} from './mock/film.js';
 import {createFilters} from './mock/filter.js';
 

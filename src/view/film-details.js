@@ -1,5 +1,5 @@
 import {humanizeDate} from '../utils/common.js';
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const generateTemplate = (data, template) => {
   return data.map((it) => template(it)).join(``);

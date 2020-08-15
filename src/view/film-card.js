@@ -1,5 +1,5 @@
 import {DESCRIPTION_MAX_LETTERS} from '../const.js';
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const createFilmCardTemplate = (film) => {
   const {pictureUrl, filmTitle, description, comments, rating, genres, releaseDate, isViewed, isInWatchList, isFavorited, runTime} = film;

@@ -1,4 +1,4 @@
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const createTopCommentedFilmsTemplate = () => {
   return `<section class="films-list--extra">

@@ -1,5 +1,5 @@
 import {setFirstLetterToUpperCase} from '../utils/common.js';
-import AbstractView from "./abstract.js";
+import AbstractView from './abstract.js';
 
 const createSiteMenuTemplate = (filters) => {
   const createFilterTemplate = (filterItem) => {

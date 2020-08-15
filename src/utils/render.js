@@ -1,5 +1,5 @@
-import {RenderPlace} from "../const.js";
-import Abstract from "../view/abstract.js";
+import {RenderPlace} from '../const.js';
+import Abstract from '../view/abstract.js';
 
 export const renderTemplate = (container, template, place = RenderPlace.BEFOREEND) => {
   container.insertAdjacentHTML(place, template);
