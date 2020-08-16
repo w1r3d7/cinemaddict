@@ -1,4 +1,4 @@
-import {getRandomInteger} from '../utils.js';
+import {getRandomInteger} from '../utils/common.js';
 import {MINUTES_IN_HOUR} from '../const.js';
 
 const Descriptions = {

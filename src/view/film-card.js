@@ -1,5 +1,5 @@
 import {DESCRIPTION_MAX_LETTERS} from '../const.js';
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const createFilmCardTemplate = (film) => {
   const {pictureUrl, filmTitle, description, comments, rating, genres, releaseDate, isViewed, isInWatchList, isFavorited, runTime} = film;
@@ -35,25 +35,29 @@ const createFilmCardTemplate = (film) => {
         </article>`;
 };
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView {
   constructor(film) {
-    this._element = null;
+    super();
     this._film = film;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   _getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    const filmCardPoster = this.getElement().querySelector(`.film-card__poster`);
+    const filmCardTitle = this.getElement().querySelector(`.film-card__title`);
+    const filmCardComments = this.getElement().querySelector(`.film-card__comments`);
+    [filmCardPoster, filmCardTitle, filmCardComments].forEach((filmCardItem) => {
+      filmCardItem.addEventListener(`click`, this._clickHandler);
+    });
   }
 }
