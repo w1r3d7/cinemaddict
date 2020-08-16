@@ -3,7 +3,7 @@ import UserProfileView from './view/user-profile.js';
 import SiteMenuView from './view/site-menu.js';
 import FilmsSortingView from './view/films-sorting.js';
 import FilmsContainerView from './view/films-container.js';
-import FilmsListPresenter from './presenter/films-list';
+import FilmsListPresenter from './presenter/movie-list';
 import FooterStatisticsView from './view/footer-statistics.js';
 import {generateFilm} from './mock/film.js';
 import {createFilters} from './mock/filter.js';
@@ -30,5 +30,4 @@ const filmsListPresenter = new FilmsListPresenter(filmsContainerElement);
 
 filmsListPresenter.init(films);
 
-
-render(siteFooterElement, new FooterStatiscticsView(filmsViewed).getElement());
+render(siteFooterElement, new FooterStatisticsView(filmsViewed).getElement());

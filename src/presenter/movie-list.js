@@ -12,7 +12,7 @@ const ESCAPE_KEY = `Escape`;
 const RENDER_FILMS_ON_START = 5;
 const RENDER_FILMS_BY_CLICK_LOAD_MORE = 5;
 
-export default class FilmsList {
+export default class MovieList {
   constructor(filmsContainer) {
     this._filmsListContainer = filmsContainer;
     this._allFilmsComponent = new AllFilmsView();
