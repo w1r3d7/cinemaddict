@@ -1,8 +1,7 @@
 import {render} from './utils/render.js';
 import UserProfileView from './view/user-profile.js';
 import SiteMenuView from './view/site-menu.js';
-import FilmsSortingView from './view/films-sorting.js';
-import FilmsContainerView from './view/films-container.js';
+
 import FilmsListPresenter from './presenter/movie-list';
 import FooterStatisticsView from './view/footer-statistics.js';
 import {generateFilm} from './mock/film.js';
@@ -22,11 +21,8 @@ const siteFooterElement = siteBodyElement.querySelector(`.footer`);
 
 render(siteHeaderElement, new UserProfileView(filmsViewed));
 render(siteMainElement, new SiteMenuView(filter));
-render(siteMainElement, new FilmsSortingView());
-render(siteMainElement, new FilmsContainerView());
-const filmsContainerElement = siteMainElement.querySelector(`.films`);
 
-const filmsListPresenter = new FilmsListPresenter(filmsContainerElement);
+const filmsListPresenter = new FilmsListPresenter(siteMainElement);
 
 filmsListPresenter.init(films);
 
