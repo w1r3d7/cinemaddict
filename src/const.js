@@ -7,3 +7,9 @@ export const RenderPlace = {
   BEFOREBEGIN: `beforebegin`,
   AFTERBEGIN: `afterbegin`,
 };
+
+export const SortType = {
+  BY_DEFAULT: `default`,
+  BY_DATE: `date`,
+  BY_RATING: `rating`,
+};
