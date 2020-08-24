@@ -30,7 +30,28 @@ export const createElement = (template) => {
   return tempContainer.firstChild;
 };
 
+export const replace = (oldItem, newItem) => {
+  if (oldItem instanceof Abstract) {
+    oldItem = oldItem.getElement();
+  }
+
+  if (newItem instanceof Abstract) {
+    newItem = newItem.getElement();
+  }
+
+  const parentElement = oldItem.parentElement;
+
+  if (parentElement === null || !oldItem || !newItem) {
+    throw new Error(`Can't replace`);
+  }
+
+  parentElement.replaceChild(newItem, oldItem);
+};
+
 export const removeComponent = (component) => {
+  if (!(component instanceof Abstract)) {
+    throw new Error(`Can remove only Components!`);
+  }
   component.getElement().remove();
   component.removeElement();
 };

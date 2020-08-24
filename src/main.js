@@ -2,7 +2,7 @@ import {render} from './utils/render.js';
 import UserProfileView from './view/user-profile.js';
 import SiteMenuView from './view/site-menu.js';
 
-import FilmsListPresenter from './presenter/movie-list';
+import FilmsListPresenter from './presenter/film-list.js';
 import FooterStatisticsView from './view/footer-statistics.js';
 import {generateFilm} from './mock/film.js';
 import {createFilters} from './mock/filter.js';

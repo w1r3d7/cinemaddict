@@ -1,21 +1,21 @@
 import AllFilmsView from '../view/all-films.js';
 import TopRatedFilmsView from '../view/top-rated-films.js';
 import TopCommentedFilmsView from '../view/top-commented-films.js';
-import FilmCardView from '../view/film-card.js';
 import LoadMoreButtonView from '../view/load-more-button.js';
-import FilmDetailsView from '../view/film-details.js';
 import NoFilmsView from '../view/no-films.js';
 import FilmsSortingView from '../view/films-sorting.js';
 import FilmsContainerView from '../view/films-container.js';
 import {render, removeComponent} from '../utils/render.js';
 import {SortType} from '../const.js';
+import FilmPresenter from './film.js';
+import {updateItem} from '../utils/common.js';
 
 const TOP_FILM_COUNTER = 2;
-const ESCAPE_KEY = `Escape`;
+
 const RENDER_FILMS_ON_START = 5;
 const RENDER_FILMS_BY_CLICK_LOAD_MORE = 5;
 
-export default class MovieList {
+export default class FilmList {
   constructor(container) {
     this._siteMainElement = container;
     this._filmsSortingComponent = new FilmsSortingView();
@@ -27,6 +27,9 @@ export default class MovieList {
     this._noFilmsViewComponent = new NoFilmsView();
     this._currentSortType = SortType.BY_DEFAULT;
     this._clickSortingHandler = this._clickSortingHandler.bind(this);
+    this._filmPresenter = {};
+    this._updateData = this._updateData.bind(this);
+    this._openOnlyOneFilmPopup = this._openOnlyOneFilmPopup.bind(this);
   }
 
   init(films) {
@@ -38,8 +41,26 @@ export default class MovieList {
     this._renderFilms();
   }
 
+  _updateData(updatedFilm, doNotRerender) {
+    this._films = updateItem(this._films, updatedFilm);
+    this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
+    if (!doNotRerender) {
+      this._filmPresenter[updatedFilm.id].init(updatedFilm);
+    }
+  }
+
+  _openOnlyOneFilmPopup() {
+    Object.values(this._filmPresenter).forEach((presenter) => {
+      presenter.closeAllFilmDetails();
+    });
+  }
+
   _clearAllFilmsContainer() {
-    this._allFilmsContainerElement.innerHTML = ``;
+    Object.values(this._filmPresenter).forEach((presenter) => {
+      presenter.destroy();
+    });
+
+    this._filmPresenter = {};
   }
 
   _clickSortingHandler(sortType) {
@@ -77,53 +98,11 @@ export default class MovieList {
     render(this._filmsListContainer, this._noFilmsViewComponent);
   }
 
-  _renderFilmDetails(film) {
-    const filmDetailsComponent = new FilmDetailsView(film);
-    const filmDetailsElement = filmDetailsComponent.getElement();
-    const filmDetailsCommentArea = filmDetailsElement.querySelector(`.film-details__comment-input`);
-
-    filmDetailsCommentArea.addEventListener(`keydown`, (evt) => {
-      evt.stopPropagation();
-    });
-
-    const closeFilmDetails = () => {
-      removeComponent(filmDetailsComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === ESCAPE_KEY) {
-        closeFilmDetails();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    document.addEventListener(`keydown`, onEscKeyDown);
-
-    filmDetailsComponent.setClickHandler(() => {
-      closeFilmDetails();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(this._filmsListContainer, filmDetailsElement);
-  }
-
   _renderFilm(container, film) {
-    const filmCardComponent = new FilmCardView(film);
+    const filmPresenter = new FilmPresenter(container, this._updateData, this._openOnlyOneFilmPopup);
+    filmPresenter.init(film);
 
-    const checkIfFilmDetailsRenderedOnce = () => {
-      const filmDetails = this._filmsListContainer.getElement().querySelector(`.film-details`);
-      if (filmDetails) {
-        filmDetails.remove();
-      }
-    };
-
-    const onFilmCardClick = () => {
-      checkIfFilmDetailsRenderedOnce();
-      this._renderFilmDetails(film);
-    };
-
-    filmCardComponent.setClickHandler(onFilmCardClick);
-    render(container, filmCardComponent);
+    this._filmPresenter[film.id] = filmPresenter;
   }
 
   _clickLoadMoreButtonHandler() {
@@ -168,8 +147,8 @@ export default class MovieList {
     this._allFilmsContainerElement = this._filmsListContainer.getElement().querySelector(`.films-list__container`);
 
     this._renderAllFilmsOnStart();
-    this._renderTopRatedFilms();
-    this._renderTopCommentedFilms();
+    // this._renderTopRatedFilms();
+    // this._renderTopCommentedFilms();
   }
 
   _renderTopCommentedFilms() {

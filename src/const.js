@@ -13,3 +13,10 @@ export const SortType = {
   BY_DATE: `date`,
   BY_RATING: `rating`,
 };
+
+export const commentEmojis = [
+  `smile`,
+  `sleeping`,
+  `puke`,
+  `angry`,
+];
