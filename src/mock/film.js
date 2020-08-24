@@ -1,5 +1,5 @@
 import {getRandomInteger} from '../utils/common.js';
-import {MINUTES_IN_HOUR, commentEmojis} from '../const.js';
+import {commentEmojis} from '../const.js';
 import {nanoid} from "nanoid";
 
 const Descriptions = {
@@ -40,7 +40,7 @@ const DateGap = {
 };
 
 const Runtime = {
-  MIN: 90,
+  MIN: 30,
   MAX: 120,
 };
 
@@ -199,9 +199,7 @@ export const generateFilm = () => {
   const isFavorited = getRandomBoolean();
   const isInWatchList = getRandomBoolean();
   const releaseDate = generateDateTime();
-  const runTimeMinutes = getRandomInteger(Runtime.MIN, Runtime.MAX);
-  const runTimeHours = Math.floor(runTimeMinutes / MINUTES_IN_HOUR);
-  const runTime = `${runTimeHours}h ${runTimeMinutes % MINUTES_IN_HOUR}m`;
+  const runTime = getRandomInteger(Runtime.MIN, Runtime.MAX);
   const ageRating = getRandomInteger(AgeRating.MIN, AgeRating.MAX);
 
   return {

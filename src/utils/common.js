@@ -1,3 +1,6 @@
+import moment from 'moment';
+import {MINUTES_IN_HOUR} from '../const.js';
+
 export const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -5,17 +8,22 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-const addZero = (number) => {
-  return String(number).padStart(2, 0);
+export const humanizeCommentDate = (date) => {
+
+  return moment(date).fromNow();
 };
 
-export const humanizeDate = (date) => {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  return `${year}/${addZero(month)}/${addZero(day)} ${addZero(hours)}:${addZero(minutes)}`;
+export const humanizeReleaseDate = (releaseDate) => {
+  return moment(releaseDate).format(`DD MMMM YYYY`);
+};
+
+export const humanizeRunTime = (runTime) => {
+  const time = moment.utc().startOf(`day`).add({minutes: runTime});
+  if (runTime / MINUTES_IN_HOUR >= 1) {
+    return time.format(`H[h] mm[m]`);
+  }
+
+  return time.format(`mm[m]`);
 };
 
 export const setFirstLetterToUpperCase = (string) => {
