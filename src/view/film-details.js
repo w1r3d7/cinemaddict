@@ -1,4 +1,4 @@
-import {humanizeDate} from '../utils/common.js';
+import {humanizeCommentDate, humanizeRunTime, humanizeReleaseDate} from '../utils/common.js';
 import SmartView from './smart.js';
 import {commentEmojis} from '../const.js';
 
@@ -16,7 +16,7 @@ const createCommentTemplate = (comment) => {
               <p class="film-details__comment-text">${text}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${name}</span>
-                <span class="film-details__comment-day">${humanizeDate(date)}</span>
+                <span class="film-details__comment-day">${humanizeCommentDate(date)}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
@@ -66,8 +66,8 @@ const createFilmDetailsTemplate = (film) => {
 
   const genreList = generateTemplate(genres, createGenreTemplate);
   const commentsList = generateTemplate(comments, createCommentTemplate);
-  const filmReleaseDate = releaseDate.toLocaleString(`en-US`, {day: `numeric`, month: `long`, year: `numeric`});
-  const emojies = commentEmojis.map((it) => createEmojiListTemplate(it, commentEmoji)).join(``);
+  const filmReleaseDate = humanizeReleaseDate(releaseDate);
+  const emojis = commentEmojis.map((it) => createEmojiListTemplate(it, commentEmoji)).join(``);
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -112,7 +112,7 @@ const createFilmDetailsTemplate = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${runTime}</td>
+              <td class="film-details__cell">${humanizeRunTime(runTime)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -153,7 +153,7 @@ const createFilmDetailsTemplate = (film) => {
           </label>
 
           <div class="film-details__emoji-list">
-            ${emojies}
+            ${emojis}
           </div>
         </div>
       </section>

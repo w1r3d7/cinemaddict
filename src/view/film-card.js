@@ -1,5 +1,6 @@
 import {DESCRIPTION_MAX_LETTERS} from '../const.js';
 import AbstractView from './abstract.js';
+import {humanizeRunTime} from '../utils/common.js';
 
 const createFilmCardTemplate = (film) => {
   const {pictureUrl, filmTitle, description, comments, rating, genres, releaseDate, isViewed, isInWatchList, isFavorited, runTime} = film;
@@ -21,7 +22,7 @@ const createFilmCardTemplate = (film) => {
           <p class="film-card__rating">${rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${releaseDate.getFullYear()}</span>
-            <span class="film-card__duration">${runTime}</span>
+            <span class="film-card__duration">${humanizeRunTime(runTime)}</span>
             <span class="film-card__genre">${mainGenre}</span>
           </p>
           <img src="./images/posters/${pictureUrl}.jpg" alt="${filmTitle}" class="film-card__poster">
