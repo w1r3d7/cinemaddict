@@ -125,6 +125,7 @@ const generateDateTime = () => {
 
 const generateComment = () => {
   return {
+    id: nanoid(),
     text: getRandomElement(commentTexts),
     emoji: getRandomElement(commentEmojis),
     name: getRandomElement(commentNames),

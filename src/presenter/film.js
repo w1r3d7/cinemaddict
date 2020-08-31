@@ -74,7 +74,7 @@ export default class Film {
   _addToWatchListHandler() {
     this._updateData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        UpdateType.MINOR,
         Object.assign({}, this._film, {isInWatchList: !this._film.isInWatchList})
     );
   }
@@ -82,7 +82,7 @@ export default class Film {
   _markAsWatchedHandler() {
     this._updateData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        UpdateType.MINOR,
         Object.assign({}, this._film, {isViewed: !this._film.isViewed})
     );
   }
@@ -90,7 +90,7 @@ export default class Film {
   _markAsFavoriteHandler() {
     this._updateData(
         UserAction.UPDATE_FILM,
-        UpdateType.PATCH,
+        UpdateType.MINOR,
         Object.assign({}, this._film, {isFavorited: !this._film.isFavorited})
     );
   }
@@ -109,7 +109,7 @@ export default class Film {
     if (this._newFilmData) {
       this._updateData(
           UserAction.UPDATE_FILM,
-          UpdateType.PATCH,
+          UpdateType.MINOR,
           Object.assign({}, this._newFilmData)
       );
       this._newFilmData = null;

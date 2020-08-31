@@ -1,13 +1,15 @@
 import {humanizeCommentDate, humanizeRunTime, humanizeReleaseDate} from '../utils/common.js';
 import SmartView from './smart.js';
 import {commentEmojis} from '../const.js';
+import {nanoid} from "nanoid";
+import he from 'he';
 
 const generateTemplate = (data, template) => {
   return data.map((it) => template(it)).join(``);
 };
 
 const createCommentTemplate = (comment) => {
-  const {text, emoji, name, date} = comment;
+  const {id, text, emoji, name, date} = comment;
   return `<li class="film-details__comment">
             <span class="film-details__comment-emoji">
               <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
@@ -17,7 +19,7 @@ const createCommentTemplate = (comment) => {
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${name}</span>
                 <span class="film-details__comment-day">${humanizeCommentDate(date)}</span>
-                <button class="film-details__comment-delete">Delete</button>
+                <button class="film-details__comment-delete" data-id="${id}">Delete</button>
               </p>
             </div>
           </li>`;
@@ -59,7 +61,6 @@ const createEmojiListTemplate = (emoji, chosenEmoji) => {
             <img src="./images/emoji/${emoji}.png" width="30" height="30" alt="emoji">
           </label>`;
 };
-
 
 const createFilmDetailsTemplate = (film) => {
   const {filmTitle, description, comments, pictureUrl, genres, director, writers, country, actors, rating, isViewed, isInWatchList, isFavorited, releaseDate, runTime, ageRating, commentEmoji} = film;
@@ -144,7 +145,7 @@ const createFilmDetailsTemplate = (film) => {
         </ul>
 
         <div class="film-details__new-comment">
-          <div for="add-emoji" class="film-details__add-emoji-label">
+          <div class="film-details__add-emoji-label">
           ${commentEmoji ? createEmojiTemplate(commentEmoji) : ``}
           </div>
 
@@ -162,7 +163,6 @@ const createFilmDetailsTemplate = (film) => {
 </section>`;
 };
 
-
 export default class FilmDetails extends SmartView {
   constructor(film, sendNewFilmData) {
     super();
@@ -174,6 +174,8 @@ export default class FilmDetails extends SmartView {
     this._addToWatchedListHandler = this._addToWatchedListHandler.bind(this);
     this._addToFavoriteListHandler = this._addToFavoriteListHandler.bind(this);
     this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
+    this._deleteCommentClickHandler = this._deleteCommentClickHandler.bind(this);
+    this._sendCommentKeydownHandler = this._sendCommentKeydownHandler.bind(this);
 
     this._restoreHandlers();
   }
@@ -230,6 +232,34 @@ export default class FilmDetails extends SmartView {
     });
   }
 
+  _deleteCommentClickHandler(evt) {
+    evt.preventDefault();
+    const commentIndex = this._data.comments.findIndex((comment) => comment.id === evt.target.dataset.id);
+    const comments = [
+      ...this._data.comments.slice(0, commentIndex),
+      ...this._data.comments.slice(commentIndex + 1),
+    ];
+    this.updateData({comments});
+    this._sendNewFilmData(this._parseDataToFilm(this._data));
+  }
+
+  _sendCommentKeydownHandler(evt) {
+    if (evt.key === `Enter`) {
+      evt.preventDefault();
+      const comment = {
+        id: nanoid(),
+        text: he.encode(evt.target.value),
+        emoji: this._data.commentEmoji,
+        name: `Sergey`,
+        date: new Date(),
+      };
+      const comments = this._data.comments;
+      comments.push(comment);
+      this.updateData({comments});
+      this._sendNewFilmData(this._parseDataToFilm(this._data));
+    }
+  }
+
   _setInnerHandlers() {
     this.getElement().querySelector(`input[name=watchlist]`)
         .addEventListener(`change`, this._addToWatchListHandler);
@@ -239,5 +269,12 @@ export default class FilmDetails extends SmartView {
         .addEventListener(`change`, this._addToFavoriteListHandler);
     this.getElement().querySelector(`.film-details__emoji-list`)
         .addEventListener(`change`, this._emojiChangeHandler);
+    this.getElement().querySelector(`.film-details__comment-input`)
+        .addEventListener(`keydown`, this._sendCommentKeydownHandler);
+    const commentsDeleteButtons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
+    if (commentsDeleteButtons) {
+      commentsDeleteButtons.forEach((deleteButton) => deleteButton.addEventListener(`click`, this._deleteCommentClickHandler));
+    }
+
   }
 }

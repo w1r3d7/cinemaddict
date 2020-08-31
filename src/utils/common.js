@@ -25,9 +25,3 @@ export const humanizeRunTime = (runTime) => {
 
   return time.format(`mm[m]`);
 };
-
-export const setFirstLetterToUpperCase = (string) => {
-  const result = String(string).toLowerCase();
-
-  return `${result[0].toUpperCase()}${result.slice(1)}`;
-};

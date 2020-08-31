@@ -1,11 +1,10 @@
-import {setFirstLetterToUpperCase} from '../utils/common.js';
 import AbstractView from './abstract.js';
 
-const createSiteMenuTemplate = (filters) => {
+const createSiteMenuTemplate = (filters, currentFilter) => {
   const createFilterTemplate = (filterItem) => {
-    const {name, count} = filterItem;
-    const isActiveItem = name === `all` ? `main-navigation__item--active` : ``;
-    return `<a href="#${name}" class="main-navigation__item ${isActiveItem}">${setFirstLetterToUpperCase(name)} <span class="main-navigation__item-count">${count}</span></a>`;
+    const {type, name, count} = filterItem;
+    const isActiveItem = type === currentFilter ? `main-navigation__item--active` : ``;
+    return `<a href="#${name}" class="main-navigation__item ${isActiveItem}" data-filter-type=${type} >${name}<span class="main-navigation__item-count">${count}</span></a>`;
   };
 
   const generatedFiltersTemplate = filters.map(createFilterTemplate).join(``);
@@ -20,12 +19,28 @@ const createSiteMenuTemplate = (filters) => {
 
 
 export default class SiteMenu extends AbstractView {
-  constructor(filters) {
+  constructor(filters, currentFilter) {
     super();
     this._filters = filters;
+    this._currentFilter = currentFilter;
+    this._filterClickHandler = this._filterClickHandler.bind(this);
   }
 
   _getTemplate() {
-    return createSiteMenuTemplate(this._filters);
+    return createSiteMenuTemplate(this._filters, this._currentFilter);
+  }
+
+  _filterClickHandler(evt) {
+    evt.preventDefault();
+    if (evt.target.tagName !== `A`) {
+      return;
+    }
+    this._callback.click(evt.target.dataset.filterType);
+  }
+
+  setFilterClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.main-navigation__items`)
+        .addEventListener(`click`, this._filterClickHandler);
   }
 }
