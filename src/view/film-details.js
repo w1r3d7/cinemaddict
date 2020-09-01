@@ -15,7 +15,7 @@ const createCommentTemplate = (comment) => {
               <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
             </span>
             <div>
-              <p class="film-details__comment-text">${text}</p>
+              <p class="film-details__comment-text">${he.encode(text)}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${name}</span>
                 <span class="film-details__comment-day">${humanizeCommentDate(date)}</span>
@@ -244,17 +244,21 @@ export default class FilmDetails extends SmartView {
   }
 
   _sendCommentKeydownHandler(evt) {
-    if (evt.key === `Enter`) {
+    if ((evt.ctrlKey || evt.metaKey) && evt.key === `Enter`) {
       evt.preventDefault();
+      if (!this._data.commentEmoji) {
+        return;
+      }
       const comment = {
         id: nanoid(),
-        text: he.encode(evt.target.value),
+        text: evt.target.value,
         emoji: this._data.commentEmoji,
         name: `Sergey`,
         date: new Date(),
       };
       const comments = this._data.comments;
       comments.push(comment);
+      this.updateData({commentEmoji: ``}, true);
       this.updateData({comments});
       this._sendNewFilmData(this._parseDataToFilm(this._data));
     }
