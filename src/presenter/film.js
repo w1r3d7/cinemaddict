@@ -1,6 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import {removeComponent, render, replace} from '../utils/render.js';
 import FilmDetailsView from '../view/film-details.js';
+import {UpdateType, UserAction} from '../const.js';
 
 const ESCAPE_KEY = `Escape`;
 
@@ -72,18 +73,24 @@ export default class Film {
 
   _addToWatchListHandler() {
     this._updateData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign({}, this._film, {isInWatchList: !this._film.isInWatchList})
     );
   }
 
   _markAsWatchedHandler() {
     this._updateData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign({}, this._film, {isViewed: !this._film.isViewed})
     );
   }
 
   _markAsFavoriteHandler() {
     this._updateData(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
         Object.assign({}, this._film, {isFavorited: !this._film.isFavorited})
     );
   }
@@ -101,6 +108,8 @@ export default class Film {
     removeComponent(this._filmDetailsComponent);
     if (this._newFilmData) {
       this._updateData(
+          UserAction.UPDATE_FILM,
+          UpdateType.MINOR,
           Object.assign({}, this._newFilmData)
       );
       this._newFilmData = null;

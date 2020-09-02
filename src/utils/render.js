@@ -1,10 +1,6 @@
 import {RenderPlace} from '../const.js';
 import Abstract from '../view/abstract.js';
 
-export const renderTemplate = (container, template, place = RenderPlace.BEFOREEND) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 export const render = (container, element, place = RenderPlace.BEFOREEND) => {
   if (container instanceof Abstract) {
     container = container.getElement();

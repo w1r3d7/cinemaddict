@@ -25,22 +25,3 @@ export const humanizeRunTime = (runTime) => {
 
   return time.format(`mm[m]`);
 };
-
-export const setFirstLetterToUpperCase = (string) => {
-  const result = String(string).toLowerCase();
-
-  return `${result[0].toUpperCase()}${result.slice(1)}`;
-};
-
-export const updateItem = (itemList, item) => {
-  const itemIndex = itemList.findIndex((it) => it.id === item.id);
-  if (itemIndex === -1) {
-    return itemList;
-  }
-
-  return [
-    ...itemList.slice(0, itemIndex),
-    item,
-    ...itemList.slice(itemIndex + 1),
-  ];
-};
