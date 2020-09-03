@@ -5,7 +5,8 @@ import FooterStatisticsView from './view/footer-statistics.js';
 import {generateFilm} from './mock/film.js';
 import FilmsModel from './model/films.js';
 import FilterModel from './model/filter.js';
-import FilterPresenter from './presenter/filter.js';
+import SiteMenuPresenter from './presenter/site-menu.js';
+import StatsPresenter from './presenter/stats.js';
 
 const FILM_COUNTER = 22;
 
@@ -25,10 +26,12 @@ const siteFooterElement = siteBodyElement.querySelector(`.footer`);
 
 render(siteHeaderElement, new UserProfileView(filmsViewed));
 
-const filmsListPresenter = new FilmsListPresenter(siteMainElement, filmsModel, filterModel);
-const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
+const statsPresenter = new StatsPresenter(siteMainElement);
 
-filterPresenter.init();
+const filmsListPresenter = new FilmsListPresenter(siteMainElement, filmsModel, filterModel);
+const siteMenuPresenter = new SiteMenuPresenter(siteMainElement, filterModel, filmsModel, filmsListPresenter, statsPresenter);
+
+siteMenuPresenter.init();
 filmsListPresenter.init(films);
 
 render(siteFooterElement, new FooterStatisticsView(filmsViewed).getElement());

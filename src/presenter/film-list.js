@@ -28,12 +28,25 @@ export default class FilmList {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._openOnlyOneFilmPopup = this._openOnlyOneFilmPopup.bind(this);
     this._handleModelAction = this._handleModelAction.bind(this);
-    this._filmsModel.addObserver(this._handleModelAction);
-    this._filterModel.addObserver(this._handleModelAction);
+
   }
 
   init() {
     this._renderFilmsBoard();
+    this.isDestroy = false;
+
+    this._filmsModel.addObserver(this._handleModelAction);
+    this._filterModel.addObserver(this._handleModelAction);
+  }
+
+  destroy() {
+    this._clearFilmsBoard({resetRenderedTaskCount: true, resetSortType: true});
+    removeComponent(this._allFilmsComponent);
+    removeComponent(this._filmsListContainer);
+    this.isDestroy = true;
+
+    this._filmsModel.deleteObserver(this._handleModelAction);
+    this._filterModel.deleteObserver(this._handleModelAction);
   }
 
   _getFilms() {

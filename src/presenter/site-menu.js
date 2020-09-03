@@ -1,19 +1,22 @@
 import {render, replace, removeComponent} from "../utils/render.js";
 import {filter} from "../utils/filter.js";
 import {FilterType, UpdateType} from "../const.js";
-import SiteMenu from '../view/site-menu.js';
+import SiteMenuView from '../view/site-menu.js';
 
-export default class Filter {
-  constructor(filterContainer, filterModel, filmsModel) {
-    this._filterContainer = filterContainer;
+export default class SiteMenu {
+  constructor(siteMenuContainer, filterModel, filmsModel, filmsPresenter, statsPresenter) {
+    this._siteMenuContainer = siteMenuContainer;
+    this._statsPresenter = statsPresenter;
+    this._filmsPresenter = filmsPresenter;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
     this._currentFilter = null;
 
-    this._filterComponent = null;
+    this._siteMenuComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
+    this._handleStatsClick = this._handleStatsClick.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -22,28 +25,48 @@ export default class Filter {
   init() {
     this._currentFilter = this._filterModel.getFilter();
     const filters = this._getFilters();
-    const prevFilterComponent = this._filterComponent;
+    const prevSiteMenuComponent = this._siteMenuComponent;
 
-    this._filterComponent = new SiteMenu(filters, this._currentFilter);
-    this._filterComponent.setFilterClickHandler(this._handleFilterTypeChange);
+    this._siteMenuComponent = new SiteMenuView(filters, this._currentFilter);
+    this._siteMenuComponent.setFilterClickHandler(this._handleFilterTypeChange);
+    this._siteMenuComponent.setStatsClickHandler(this._handleStatsClick);
 
-    if (prevFilterComponent === null) {
-      render(this._filterContainer, this._filterComponent);
+    if (prevSiteMenuComponent === null) {
+      render(this._siteMenuContainer, this._siteMenuComponent);
       return;
     }
 
-    replace(prevFilterComponent, this._filterComponent);
-    removeComponent(prevFilterComponent);
+    replace(prevSiteMenuComponent, this._siteMenuComponent);
+    removeComponent(prevSiteMenuComponent);
+  }
+
+  _handleStatsClick() {
+    this._replaceFilmsToStats();
   }
 
   _handleModelEvent() {
     this.init();
   }
 
+  _replaceFilmsToStats() {
+    this._filmsPresenter.destroy();
+    this._statsPresenter.init();
+  }
+
+  _replaceStatsToFilms() {
+    if (this._filmsPresenter.isDestroy) {
+      this._statsPresenter.destroy();
+      this._filmsPresenter.init();
+    }
+    this._filmsPresenter.isDestroy = false;
+  }
+
   _handleFilterTypeChange(filterType) {
-    if (this._currentFilter === filterType) {
+    if (this._currentFilter === filterType && !this._filmsPresenter.isDestroy) {
       return;
     }
+
+    this._replaceStatsToFilms();
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
