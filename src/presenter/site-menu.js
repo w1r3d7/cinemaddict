@@ -2,6 +2,7 @@ import {render, replace, removeComponent} from "../utils/render.js";
 import {filter} from "../utils/filter.js";
 import {FilterType, UpdateType} from "../const.js";
 import SiteMenuView from '../view/site-menu.js';
+import StatsPresenter from './stats.js';
 
 export default class SiteMenu {
   constructor(siteMenuContainer, filterModel, filmsModel, filmsPresenter, statsPresenter) {
@@ -41,7 +42,10 @@ export default class SiteMenu {
   }
 
   _handleStatsClick() {
-    this._replaceFilmsToStats();
+    if (!this._filmsPresenter.isDestroy) {
+      this._statsPresenter = new StatsPresenter(this._siteMenuContainer, this._filmsModel);
+      this._replaceFilmsToStats();
+    }
   }
 
   _handleModelEvent() {

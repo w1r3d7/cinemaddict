@@ -71,7 +71,10 @@ export default class FilmList {
 
     removeComponent(this._filmsSortingComponent);
     removeComponent(this._noFilmsViewComponent);
-    removeComponent(this._loadMoreButtonComponent);
+
+    if (this._loadMoreButtonComponent) {
+      removeComponent(this._loadMoreButtonComponent);
+    }
 
     if (resetRenderedTaskCount) {
       this._filmsShowing = RENDER_FILMS_ON_START;
