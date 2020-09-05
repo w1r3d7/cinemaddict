@@ -4,7 +4,7 @@ import NoFilmsView from '../view/no-films.js';
 import FilmsSortingView from '../view/films-sorting.js';
 import FilmsContainerView from '../view/films-container.js';
 import {render, removeComponent} from '../utils/render.js';
-import {SortType, UpdateType, UserAction} from '../const.js';
+import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
 import FilmPresenter from './film.js';
 import {filter} from '../utils/filter.js';
 
@@ -94,6 +94,10 @@ export default class FilmList {
   }
 
   _handleModelAction(updateType, update) {
+    if (updateType === UpdateType.MINOR && this._filterModel.getFilter() === FilterType.ALL) {
+      updateType = UpdateType.PATCH;
+    }
+
     switch (updateType) {
       case UpdateType.PATCH:
         this._filmPresenter[update.id].init(update);
