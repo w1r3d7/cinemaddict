@@ -5,9 +5,10 @@ import FooterStatisticsView from './view/footer-statistics.js';
 import {generateFilm} from './mock/film.js';
 import FilmsModel from './model/films.js';
 import FilterModel from './model/filter.js';
-import FilterPresenter from './presenter/filter.js';
+import SiteMenuPresenter from './presenter/site-menu.js';
 
-const FILM_COUNTER = 22;
+
+const FILM_COUNTER = 222;
 
 const films = Array(FILM_COUNTER).fill(``).map(generateFilm);
 const filmsViewed = films.filter((film) => film.isViewed).length;
@@ -22,13 +23,12 @@ const siteHeaderElement = siteBodyElement.querySelector(`.header`);
 const siteMainElement = siteBodyElement.querySelector(`.main`);
 const siteFooterElement = siteBodyElement.querySelector(`.footer`);
 
-
 render(siteHeaderElement, new UserProfileView(filmsViewed));
 
 const filmsListPresenter = new FilmsListPresenter(siteMainElement, filmsModel, filterModel);
-const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
+const siteMenuPresenter = new SiteMenuPresenter(siteMainElement, filterModel, filmsModel, filmsListPresenter);
 
-filterPresenter.init();
-filmsListPresenter.init(films);
+siteMenuPresenter.init();
+filmsListPresenter.init();
 
-render(siteFooterElement, new FooterStatisticsView(filmsViewed).getElement());
+render(siteFooterElement, new FooterStatisticsView(films.length).getElement());

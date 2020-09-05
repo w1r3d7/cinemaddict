@@ -4,7 +4,7 @@ import NoFilmsView from '../view/no-films.js';
 import FilmsSortingView from '../view/films-sorting.js';
 import FilmsContainerView from '../view/films-container.js';
 import {render, removeComponent} from '../utils/render.js';
-import {SortType, UpdateType, UserAction} from '../const.js';
+import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
 import FilmPresenter from './film.js';
 import {filter} from '../utils/filter.js';
 
@@ -28,12 +28,25 @@ export default class FilmList {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._openOnlyOneFilmPopup = this._openOnlyOneFilmPopup.bind(this);
     this._handleModelAction = this._handleModelAction.bind(this);
-    this._filmsModel.addObserver(this._handleModelAction);
-    this._filterModel.addObserver(this._handleModelAction);
+
   }
 
   init() {
     this._renderFilmsBoard();
+    this.isDestroy = false;
+
+    this._filmsModel.addObserver(this._handleModelAction);
+    this._filterModel.addObserver(this._handleModelAction);
+  }
+
+  destroy() {
+    this._clearFilmsBoard({resetRenderedTaskCount: true, resetSortType: true});
+    removeComponent(this._allFilmsComponent);
+    removeComponent(this._filmsListContainer);
+    this.isDestroy = true;
+
+    this._filmsModel.deleteObserver(this._handleModelAction);
+    this._filterModel.deleteObserver(this._handleModelAction);
   }
 
   _getFilms() {
@@ -58,7 +71,10 @@ export default class FilmList {
 
     removeComponent(this._filmsSortingComponent);
     removeComponent(this._noFilmsViewComponent);
-    removeComponent(this._loadMoreButtonComponent);
+
+    if (this._loadMoreButtonComponent) {
+      removeComponent(this._loadMoreButtonComponent);
+    }
 
     if (resetRenderedTaskCount) {
       this._filmsShowing = RENDER_FILMS_ON_START;
@@ -78,6 +94,10 @@ export default class FilmList {
   }
 
   _handleModelAction(updateType, update) {
+    if (updateType === UpdateType.MINOR && this._filterModel.getFilter() === FilterType.ALL) {
+      updateType = UpdateType.PATCH;
+    }
+
     switch (updateType) {
       case UpdateType.PATCH:
         this._filmPresenter[update.id].init(update);

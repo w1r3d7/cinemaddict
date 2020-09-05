@@ -202,6 +202,7 @@ export const generateFilm = () => {
   const releaseDate = generateDateTime();
   const runTime = getRandomInteger(Runtime.MIN, Runtime.MAX);
   const ageRating = getRandomInteger(AgeRating.MIN, AgeRating.MAX);
+  const watchingDate = generateDateTime();
 
   return {
     id: nanoid(),
@@ -221,5 +222,6 @@ export const generateFilm = () => {
     releaseDate,
     runTime,
     ageRating,
+    watchingDate,
   };
 };
