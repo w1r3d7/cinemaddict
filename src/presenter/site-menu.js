@@ -5,9 +5,9 @@ import SiteMenuView from '../view/site-menu.js';
 import StatsPresenter from './stats.js';
 
 export default class SiteMenu {
-  constructor(siteMenuContainer, filterModel, filmsModel, filmsPresenter, statsPresenter) {
+  constructor(siteMenuContainer, filterModel, filmsModel, filmsPresenter) {
     this._siteMenuContainer = siteMenuContainer;
-    this._statsPresenter = statsPresenter;
+    this._statsPresenter = null;
     this._filmsPresenter = filmsPresenter;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;

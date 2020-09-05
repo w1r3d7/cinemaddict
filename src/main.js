@@ -29,6 +29,6 @@ const filmsListPresenter = new FilmsListPresenter(siteMainElement, filmsModel, f
 const siteMenuPresenter = new SiteMenuPresenter(siteMainElement, filterModel, filmsModel, filmsListPresenter);
 
 siteMenuPresenter.init();
-filmsListPresenter.init(films);
+filmsListPresenter.init();
 
 render(siteFooterElement, new FooterStatisticsView(films.length).getElement());
