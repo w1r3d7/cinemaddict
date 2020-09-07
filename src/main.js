@@ -8,7 +8,7 @@ import FilterModel from './model/filter.js';
 import SiteMenuPresenter from './presenter/site-menu.js';
 
 
-const FILM_COUNTER = 222;
+const FILM_COUNTER = 12;
 
 const films = Array(FILM_COUNTER).fill(``).map(generateFilm);
 const filmsViewed = films.filter((film) => film.isViewed).length;

@@ -28,7 +28,8 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  CALLBACK: `CALLBACK`,
 };
 
 export const FilterType = {

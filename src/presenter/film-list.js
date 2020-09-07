@@ -85,20 +85,23 @@ export default class FilmList {
     }
   }
 
-  _handleViewAction(userAction, updateType, update) {
+  _handleViewAction(userAction, updateType, update, callback) {
     switch (userAction) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._filmsModel.updateFilm(updateType, update, callback);
         break;
     }
   }
 
-  _handleModelAction(updateType, update) {
+  _handleModelAction(updateType, update, callback) {
     if (updateType === UpdateType.MINOR && this._filterModel.getFilter() === FilterType.ALL) {
       updateType = UpdateType.PATCH;
     }
 
     switch (updateType) {
+      case UpdateType.CALLBACK:
+        callback();
+        break;
       case UpdateType.PATCH:
         this._filmPresenter[update.id].init(update);
         break;

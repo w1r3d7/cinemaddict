@@ -11,9 +11,9 @@ const PopupState = {
 };
 
 export default class Film {
-  constructor(container, updateData, openOnlyOneFilmPopup) {
+  constructor(container, handleViewAction, openOnlyOneFilmPopup) {
     this._filmContainer = container;
-    this._updateData = updateData;
+    this._handleViewAction = handleViewAction;
     this._popupState = PopupState.CLOSED;
     this._filmCardComponent = null;
     this._filmDetailsComponent = null;
@@ -23,7 +23,6 @@ export default class Film {
     this._addToWatchListHandler = this._addToWatchListHandler.bind(this);
     this._markAsWatchedHandler = this._markAsWatchedHandler.bind(this);
     this._markAsFavoriteHandler = this._markAsFavoriteHandler.bind(this);
-    this._receiveNewFilmData = this._receiveNewFilmData.bind(this);
     this.closeAllFilmDetails = this.closeAllFilmDetails.bind(this);
   }
 
@@ -34,7 +33,7 @@ export default class Film {
     const prevFilmDetailsComponent = this._filmDetailsComponent;
 
     this._filmCardComponent = new FilmCardView(film);
-    this._filmDetailsComponent = new FilmDetailsView(film, this._receiveNewFilmData);
+    this._filmDetailsComponent = new FilmDetailsView(film, this._handleViewAction);
 
     this._filmsListContainer = this._filmContainer.parentElement;
 
@@ -72,7 +71,7 @@ export default class Film {
   }
 
   _addToWatchListHandler() {
-    this._updateData(
+    this._handleViewAction(
         UserAction.UPDATE_FILM,
         UpdateType.MINOR,
         Object.assign({}, this._film, {isInWatchList: !this._film.isInWatchList})
@@ -80,7 +79,7 @@ export default class Film {
   }
 
   _markAsWatchedHandler() {
-    this._updateData(
+    this._handleViewAction(
         UserAction.UPDATE_FILM,
         UpdateType.MINOR,
         Object.assign({}, this._film, {isViewed: !this._film.isViewed})
@@ -88,7 +87,7 @@ export default class Film {
   }
 
   _markAsFavoriteHandler() {
-    this._updateData(
+    this._handleViewAction(
         UserAction.UPDATE_FILM,
         UpdateType.MINOR,
         Object.assign({}, this._film, {isFavorited: !this._film.isFavorited})
@@ -99,21 +98,14 @@ export default class Film {
     this._renderFilmDetails(this._film);
   }
 
-  _receiveNewFilmData(newFilmData) {
-    this._newFilmData = newFilmData;
-  }
-
   _closeFilmDetails() {
     this._popupState = PopupState.CLOSED;
     removeComponent(this._filmDetailsComponent);
-    if (this._newFilmData) {
-      this._updateData(
-          UserAction.UPDATE_FILM,
-          UpdateType.MINOR,
-          Object.assign({}, this._newFilmData)
-      );
-      this._newFilmData = null;
-    }
+    this._handleViewAction(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign({}, this._film)
+    );
   }
 
   _renderFilmDetails() {
