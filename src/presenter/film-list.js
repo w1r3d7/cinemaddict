@@ -176,13 +176,14 @@ export default class FilmList {
   }
 
   _renderFilmsBoard() {
+    this._renderSorting();
+    render(this._siteMainElement, this._filmsListContainer);
+
     if (this._getFilms().length === 0) {
       this._renderNoFilms();
       return;
     }
 
-    this._renderSorting();
-    render(this._siteMainElement, this._filmsListContainer);
     render(this._filmsListContainer, this._allFilmsComponent);
     this._allFilmsContainerElement = this._filmsListContainer.getElement().querySelector(`.films-list__container`);
 
