@@ -23,13 +23,16 @@ export const commentEmojis = [
 
 export const UserAction = {
   UPDATE_FILM: `UPDATE_FILM`,
+  CREATE_COMMENT: `CREATE_COMMENT`,
+  DELETE_COMMENT: `DELETE_COMMENT`,
+  UPDATE_BOARD: `UPDATE_BOARD`,
 };
 
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
   MAJOR: `MAJOR`,
-  CALLBACK: `CALLBACK`,
+  INIT: `INIT`,
 };
 
 export const FilterType = {

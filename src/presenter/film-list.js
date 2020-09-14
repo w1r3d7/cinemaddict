@@ -7,12 +7,13 @@ import {render, removeComponent} from '../utils/render.js';
 import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
 import FilmPresenter from './film.js';
 import {filter} from '../utils/filter.js';
+import LoadingView from '../view/loading.js';
 
 const RENDER_FILMS_ON_START = 5;
 const RENDER_FILMS_BY_CLICK_LOAD_MORE = 5;
 
 export default class FilmList {
-  constructor(container, filmsModel, filterModel) {
+  constructor(container, filmsModel, filterModel, api) {
     this._siteMainElement = container;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
@@ -28,6 +29,9 @@ export default class FilmList {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._openOnlyOneFilmPopup = this._openOnlyOneFilmPopup.bind(this);
     this._handleModelAction = this._handleModelAction.bind(this);
+    this._isLoading = true;
+    this._loadingComponent = new LoadingView();
+    this._api = api;
 
   }
 
@@ -43,6 +47,7 @@ export default class FilmList {
     this._clearFilmsBoard({resetRenderedTaskCount: true, resetSortType: true});
     removeComponent(this._allFilmsComponent);
     removeComponent(this._filmsListContainer);
+    removeComponent(this._loadingComponent);
     this.isDestroy = true;
 
     this._filmsModel.deleteObserver(this._handleModelAction);
@@ -88,8 +93,12 @@ export default class FilmList {
   _handleViewAction(userAction, updateType, update, callback) {
     switch (userAction) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update, callback);
+        this._api.updateFilm(update)
+          .then((response) => this._filmsModel.updateFilm(updateType, response, callback));
         break;
+      case UserAction.UPDATE_BOARD:
+        this._clearFilmsBoard();
+        this._renderFilmsBoard();
     }
   }
 
@@ -99,10 +108,16 @@ export default class FilmList {
     }
 
     switch (updateType) {
-      case UpdateType.CALLBACK:
-        callback();
+      case UpdateType.INIT:
+        this._isLoading = false;
+        removeComponent(this._loadingComponent);
+        this._renderFilmsBoard();
         break;
       case UpdateType.PATCH:
+        if (callback) {
+          callback();
+          return;
+        }
         this._filmPresenter[update.id].init(update);
         break;
       case UpdateType.MINOR:
@@ -134,6 +149,7 @@ export default class FilmList {
 
   _renderSorting() {
     if (this._filmsSortingComponent !== null) {
+      removeComponent(this._filmsSortingComponent);
       this._filmsSortingComponent = null;
     }
 
@@ -142,12 +158,16 @@ export default class FilmList {
     render(this._siteMainElement, this._filmsSortingComponent);
   }
 
+  _renderLoading() {
+    render(this._filmsListContainer, this._loadingComponent);
+  }
+
   _renderNoFilms() {
     render(this._filmsListContainer, this._noFilmsViewComponent);
   }
 
   _renderFilm(container, film) {
-    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._openOnlyOneFilmPopup);
+    const filmPresenter = new FilmPresenter(container, this._handleViewAction, this._openOnlyOneFilmPopup, this._api);
     filmPresenter.init(film);
 
     this._filmPresenter[film.id] = filmPresenter;
@@ -182,10 +202,16 @@ export default class FilmList {
     this._renderSorting();
     render(this._siteMainElement, this._filmsListContainer);
 
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     if (this._getFilms().length === 0) {
       this._renderNoFilms();
       return;
     }
+
 
     render(this._filmsListContainer, this._allFilmsComponent);
     this._allFilmsContainerElement = this._filmsListContainer.getElement().querySelector(`.films-list__container`);

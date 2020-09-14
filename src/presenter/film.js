@@ -2,6 +2,9 @@ import FilmCardView from '../view/film-card.js';
 import {removeComponent, render, replace} from '../utils/render.js';
 import FilmDetailsView from '../view/film-details.js';
 import {UpdateType, UserAction} from '../const.js';
+import CommentsPresenter from './comments.js';
+import CommentsModel from '../model/comments.js';
+import LoadingView from '../view/loading.js';
 
 const ESCAPE_KEY = `Escape`;
 
@@ -11,8 +14,9 @@ const PopupState = {
 };
 
 export default class Film {
-  constructor(container, handleViewAction, openOnlyOneFilmPopup) {
+  constructor(container, handleViewAction, openOnlyOneFilmPopup, api) {
     this._filmContainer = container;
+    this._api = api;
     this._handleViewAction = handleViewAction;
     this._popupState = PopupState.CLOSED;
     this._filmCardComponent = null;
@@ -32,8 +36,8 @@ export default class Film {
     const prevFilmCardComponent = this._filmCardComponent;
     const prevFilmDetailsComponent = this._filmDetailsComponent;
 
-    this._filmCardComponent = new FilmCardView(film);
-    this._filmDetailsComponent = new FilmDetailsView(film, this._handleViewAction);
+    this._filmCardComponent = new FilmCardView(this._film);
+    this._filmDetailsComponent = new FilmDetailsView(this._film, this._handleViewAction);
 
     this._filmsListContainer = this._filmContainer.parentElement;
 
@@ -102,21 +106,13 @@ export default class Film {
     this._popupState = PopupState.CLOSED;
     removeComponent(this._filmDetailsComponent);
     this._handleViewAction(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign({}, this._film)
+        UserAction.UPDATE_BOARD
     );
   }
 
   _renderFilmDetails() {
     this._openOnlyOneFilmPopup();
     this._popupState = PopupState.OPENED;
-    this._filmDetailsComponent.getElement()
-        .querySelector(`.film-details__comment-input`)
-        .addEventListener(`keydown`, (evt) => {
-          evt.stopPropagation();
-        });
-
 
     const onEscKeyDown = (evt) => {
       if (evt.key === ESCAPE_KEY) {
@@ -133,5 +129,15 @@ export default class Film {
     });
 
     render(this._filmsListContainer, this._filmDetailsComponent);
+    const formDetailsBottomContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
+    const loadingView = new LoadingView();
+    render(formDetailsBottomContainer, loadingView);
+
+    const commentsModel = new CommentsModel();
+    const commentsPresenter = new CommentsPresenter(formDetailsBottomContainer, commentsModel, this._api);
+    this._api.getComments(this._film)
+      .then((comments) => commentsModel.setComments(UpdateType.PATCH, comments))
+      .then(() => removeComponent(loadingView))
+      .then(() => commentsPresenter.init(this._film));
   }
 }
