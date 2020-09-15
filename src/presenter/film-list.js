@@ -96,9 +96,13 @@ export default class FilmList {
         this._api.updateFilm(update)
           .then((response) => this._filmsModel.updateFilm(updateType, response, callback));
         break;
+      case UserAction.UPDATE_LOCAL_FILM:
+        this._filmsModel.updateFilm(updateType, update, callback);
+        break;
       case UserAction.UPDATE_BOARD:
         this._clearFilmsBoard();
         this._renderFilmsBoard();
+        break;
     }
   }
 

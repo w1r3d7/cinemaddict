@@ -39,3 +39,10 @@ export const userRank = (filmsViewed) => {
 
   return rank;
 };
+
+export const generateTemplate = (data, template) => {
+  if (!data) {
+    return ``;
+  }
+  return data.map((it) => template(it)).join(``);
+};

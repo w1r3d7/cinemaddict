@@ -1,4 +1,4 @@
-import {humanizeRunTime, humanizeReleaseDate} from '../utils/common.js';
+import {humanizeRunTime, humanizeReleaseDate, generateTemplate} from '../utils/common.js';
 import AbstractView from './abstract.js';
 import {UpdateType, UserAction} from '../const.js';
 import {createElement, replace} from '../utils/render.js';
@@ -8,14 +8,6 @@ const Controls = {
   IS_VIEWED: `isViewed`,
   IS_FAVORITED: `isFavorited`,
 };
-
-const generateTemplate = (data, template) => {
-  if (!data) {
-    return ``;
-  }
-  return data.map((it) => template(it)).join(``);
-};
-
 
 const createGenreTemplate = (genre) => {
   return `<span class="film-details__genre">${genre}</span>`;

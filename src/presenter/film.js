@@ -134,7 +134,7 @@ export default class Film {
     render(formDetailsBottomContainer, loadingView);
 
     const commentsModel = new CommentsModel();
-    const commentsPresenter = new CommentsPresenter(formDetailsBottomContainer, commentsModel, this._api);
+    const commentsPresenter = new CommentsPresenter(formDetailsBottomContainer, commentsModel, this._api, this._handleViewAction);
     this._api.getComments(this._film)
       .then((comments) => commentsModel.setComments(UpdateType.PATCH, comments))
       .then(() => removeComponent(loadingView))

@@ -1,15 +1,8 @@
 import he from "he";
-import {humanizeCommentDate} from "../utils/common";
-import {commentEmojis, UpdateType, UserAction} from "../const";
+import {humanizeCommentDate, generateTemplate} from '../utils/common.js';
+import {commentEmojis, UpdateType, UserAction} from '../const.js';
 import AbstractView from './abstract.js';
 import {createElement, replace} from '../utils/render.js';
-
-const generateTemplate = (data, template) => {
-  if (!data) {
-    return ``;
-  }
-  return data.map((it) => template(it)).join(``);
-};
 
 const createCommentTemplate = (userComment) => {
   const {
