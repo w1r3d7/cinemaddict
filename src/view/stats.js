@@ -19,7 +19,10 @@ const totalDurationTemplate = (films) => {
 const countFilmGenres = (films) => {
   const result = {};
   films.forEach((film) => {
-    const [mainGenre] = film.genres;
+    let [mainGenre] = film.genres;
+    if (!mainGenre) {
+      mainGenre = ``;
+    }
     if (!result[mainGenre]) {
       result[mainGenre] = 1;
     } else {
