@@ -106,7 +106,7 @@ export default class FilmList {
     }
   }
 
-  _handleModelAction(updateType, update, callback) {
+  _handleModelAction(updateType, update, viewCallback) {
     if (updateType === UpdateType.MINOR && this._filterModel.getFilter() === FilterType.ALL) {
       updateType = UpdateType.PATCH;
     }
@@ -118,8 +118,8 @@ export default class FilmList {
         this._renderFilmsBoard();
         break;
       case UpdateType.PATCH:
-        if (callback) {
-          callback();
+        if (viewCallback) {
+          viewCallback();
           return;
         }
         this._filmPresenter[update.id].init(update);

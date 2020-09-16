@@ -34,11 +34,13 @@ export default class Comments {
   }
 
 
-  _handleViewAction(userAction, updateType, callback, update) {
+  _handleViewAction(userAction, updateType, viewCallback, update, fallback) {
     switch (userAction) {
       case UserAction.DELETE_COMMENT:
         this._api.deleteComment(update)
           .then(() => {
+            const comments = this._film.comments.filter((commentId) => commentId !== update);
+            this._film.comments = comments;
             this._handleFilmsViewAction(
                 UserAction.UPDATE_LOCAL_FILM,
                 UpdateType.JUST_DATA,
@@ -46,18 +48,24 @@ export default class Comments {
                     {},
                     this._film,
                     {
-                      "comments": this._film.comments.filter((commentId) => commentId !== update),
+                      "comments": comments,
                     }
                 ));
-            this._commentsModel.deleteComment(updateType, callback, update);
-          });
+            this._commentsModel.deleteComment(updateType, viewCallback, update);
+          })
+          .catch(() => fallback());
         break;
       case UserAction.CREATE_COMMENT:
         this._api.createComment(this._film, update)
           .then((response) => {
-            this._handleFilmsViewAction(UserAction.UPDATE_LOCAL_FILM, UpdateType.JUST_DATA, FilmsModel.adaptToClient(response.movie));
-            this._commentsModel.createComment(updateType, callback, response.comments);
-          });
+            this._film.comments = response.comments;
+            this._handleFilmsViewAction(
+                UserAction.UPDATE_LOCAL_FILM,
+                UpdateType.JUST_DATA,
+                FilmsModel.adaptToClient(response.movie));
+            this._commentsModel.createComment(updateType, viewCallback, response.comments);
+          })
+          .catch(() => fallback());
         break;
     }
   }

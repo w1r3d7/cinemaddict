@@ -138,6 +138,11 @@ export default class Film {
     this._api.getComments(this._film)
       .then((comments) => commentsModel.setComments(UpdateType.PATCH, comments))
       .then(() => removeComponent(loadingView))
-      .then(() => commentsPresenter.init(this._film));
+      .then(() => commentsPresenter.init(this._film))
+      .catch(() => {
+        commentsModel.setComments(UpdateType.PATCH, []);
+        removeComponent(loadingView);
+        commentsPresenter.init(this._film);
+      });
   }
 }

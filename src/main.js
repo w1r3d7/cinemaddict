@@ -9,7 +9,7 @@ import Api from './api.js';
 import {UpdateType} from './const.js';
 
 const url = `https://12.ecmascript.pages.academy/cinemaddict`;
-const auth = `Basic hochu100%!`;
+const auth = `Basic soto4ka`;
 
 const api = new Api(url, auth);
 
