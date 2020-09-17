@@ -164,6 +164,7 @@ export default class FilmDetails extends AbstractView {
   }
 
   _controlHandler(control) {
+    console.log(this._film)
     const controls = {
       isInWatchList: this._film.isInWatchList,
       isViewed: this._film.isViewed,
