@@ -1,15 +1,10 @@
 import he from "he";
-import {humanizeCommentDate} from "../utils/common";
-import {commentEmojis, UpdateType, UserAction} from "../const";
+import {humanizeCommentDate, generateTemplate} from '../utils/common.js';
+import {commentEmojis, UpdateType, UserAction} from '../const.js';
 import AbstractView from './abstract.js';
 import {createElement, replace} from '../utils/render.js';
 
-const generateTemplate = (data, template) => {
-  if (!data) {
-    return ``;
-  }
-  return data.map((it) => template(it)).join(``);
-};
+const deleteButtonText = `Delete`;
 
 const createCommentTemplate = (userComment) => {
   const {
@@ -28,7 +23,7 @@ const createCommentTemplate = (userComment) => {
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
                 <span class="film-details__comment-day">${humanizeCommentDate(date)}</span>
-                <button class="film-details__comment-delete" data-id="${id}">Delete</button>
+                <button class="film-details__comment-delete" data-id="${id}">${deleteButtonText}</button>
               </p>
             </div>
           </li>`;
@@ -104,6 +99,7 @@ export default class Comments extends AbstractView {
   _updateComments(response) {
     if (response) {
       this._comments = response;
+      this._resetCommentForm();
     }
     const commentsCounter = this.getElement().querySelector(`.film-details__comments-count`);
     commentsCounter.textContent = String(this._comments.length);
@@ -123,11 +119,22 @@ export default class Comments extends AbstractView {
       ...this._comments.slice(commentIndex + 1),
     ];
 
+    const deleteButtonAction = () => {
+      const deleteButton = evt.target;
+      evt.target.textContent = evt.target.textContent !== deleteButtonText ? deleteButtonText : evt.target.textContent;
+      this._shake(deleteButton);
+      evt.target.disabled = false;
+    };
+
+    evt.target.textContent = `Deleting..`;
+    evt.target.disabled = true;
+
     this._handleViewAction(
         UserAction.DELETE_COMMENT,
         UpdateType.PATCH,
         this._updateComments,
-        commentId
+        commentId,
+        deleteButtonAction
     );
   }
 
@@ -136,16 +143,42 @@ export default class Comments extends AbstractView {
     emoji.innerHTML = ``;
     const textArea = this.getElement().querySelector(`.film-details__comment-input`);
     textArea.value = ``;
+    textArea.disabled = false;
     const emojiList = this.getElement().querySelector(`.film-details__emoji-list`);
     emojiList.innerHTML = createEmojiList(commentEmojis);
+  }
+
+  _changeFormStatus() {
+    const textArea = this.getElement().querySelector(`.film-details__comment-input`);
+    const emojiList = this.getElement().querySelectorAll(`.film-details__emoji-item`);
+
+    const reverseDisableStatus = (element) => {
+      if (element.disabled) {
+        element.disabled = false;
+        return;
+      }
+      element.disabled = true;
+    };
+
+    reverseDisableStatus(textArea);
+    emojiList.forEach((input) => reverseDisableStatus(input));
   }
 
   _sendCommentKeydownHandler(evt) {
     if ((evt.ctrlKey || evt.metaKey) && evt.key === `Enter`) {
       evt.preventDefault();
       if (!this._commentEmoji) {
+        const emoji = this.getElement().querySelector(`.film-details__add-emoji-label`);
+        this._shake(emoji);
         return;
       }
+      this._changeFormStatus();
+      const formAction = () => {
+        const textArea = this.getElement().querySelector(`.film-details__comment-input`);
+        this._shake(textArea);
+        this._changeFormStatus();
+      };
+
       const comment = {
         comment: String(evt.target.value),
         emotion: String(this._commentEmoji),
@@ -156,10 +189,10 @@ export default class Comments extends AbstractView {
           UserAction.CREATE_COMMENT,
           UpdateType.PATCH,
           this._updateComments,
-          comment
-
+          comment,
+          formAction
       );
-      this._resetCommentForm();
+
     }
   }
 

@@ -26,6 +26,7 @@ export const UserAction = {
   CREATE_COMMENT: `CREATE_COMMENT`,
   DELETE_COMMENT: `DELETE_COMMENT`,
   UPDATE_BOARD: `UPDATE_BOARD`,
+  UPDATE_LOCAL_FILM: `UPDATE_LOCAL_FILM`,
 };
 
 export const UpdateType = {
@@ -33,6 +34,7 @@ export const UpdateType = {
   MINOR: `MINOR`,
   MAJOR: `MAJOR`,
   INIT: `INIT`,
+  JUST_DATA: `JUST_DATA`,
 };
 
 export const FilterType = {

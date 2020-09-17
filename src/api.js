@@ -29,7 +29,7 @@ export default class Api {
       method: Method.POST,
       body: JSON.stringify(comment),
       headers: new Headers({"Content-Type": `application/json`})
-    }).then(Api.toJSON)
+    }).then(Api.toJSON);
   }
 
   deleteComment(commentId) {
