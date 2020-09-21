@@ -51,3 +51,9 @@ export const StatsFilterType = {
   MONTH: `Month`,
   YEAR: `Year`,
 };
+
+export const FilmsType = {
+  ALL: `ALL`,
+  RATED: `RATED`,
+  COMMENTED: `COMMENTED`
+};

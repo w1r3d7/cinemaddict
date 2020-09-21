@@ -51,9 +51,17 @@ export default class Provider {
     return Promise.reject(`offline`);
   }
 
-  createComment(comment) {
+  createComment(film, comment) {
     if (Provider.isOnline()) {
-      return this._api.createComment(comment);
+      return this._api.createComment(film, comment);
+    }
+
+    return Promise.reject(`offline`);
+  }
+
+  deleteComment(comment) {
+    if (Provider.isOnline()) {
+      return this._api.deleteComment(comment);
     }
 
     return Promise.reject(`offline`);

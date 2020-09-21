@@ -14,9 +14,10 @@ const PopupState = {
 };
 
 export default class Film {
-  constructor(container, handleViewAction, openOnlyOneFilmPopup, api) {
+  constructor(container, handleViewAction, openOnlyOneFilmPopup, api, siteMainElement) {
     this._filmContainer = container;
     this._api = api;
+    this._siteMainElement = siteMainElement;
     this._handleViewAction = handleViewAction;
     this._popupState = PopupState.CLOSED;
     this._filmCardComponent = null;
@@ -38,8 +39,6 @@ export default class Film {
 
     this._filmCardComponent = new FilmCardView(this._film);
     this._filmDetailsComponent = new FilmDetailsView(this._film, this._handleViewAction);
-
-    this._filmsListContainer = this._filmContainer.parentElement;
 
     this._filmCardComponent.setCardOpenClickHandler(this._filmOpenCardClickHandler);
     this._filmCardComponent.setAddToWatchListClickHandler(this._addToWatchListHandler);
@@ -128,7 +127,7 @@ export default class Film {
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
-    render(this._filmsListContainer, this._filmDetailsComponent);
+    render(this._siteMainElement, this._filmDetailsComponent);
     const formDetailsBottomContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
     const loadingView = new LoadingView();
     render(formDetailsBottomContainer, loadingView);
