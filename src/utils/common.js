@@ -1,21 +1,15 @@
 import moment from 'moment';
 import {MINUTES_IN_HOUR} from '../const.js';
 
-export const humanizeCommentDate = (date) => {
+export const humanizeCommentDate = (date) => moment(date).fromNow();
 
-  return moment(date).fromNow();
-};
-
-export const humanizeReleaseDate = (releaseDate) => {
-  return moment(releaseDate).format(`DD MMMM YYYY`);
-};
+export const humanizeReleaseDate = (releaseDate) => moment(releaseDate).format(`DD MMMM YYYY`);
 
 export const humanizeRunTime = (runTime) => {
   const time = moment.utc().startOf(`day`).add({minutes: runTime});
   if (runTime / MINUTES_IN_HOUR >= 1) {
     return time.format(`H[h] mm[m]`);
   }
-
   return time.format(`mm[m]`);
 };
 

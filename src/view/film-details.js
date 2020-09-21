@@ -1,6 +1,6 @@
 import {humanizeRunTime, humanizeReleaseDate, generateTemplate} from '../utils/common.js';
 import AbstractView from './abstract.js';
-import {UpdateType, UserAction} from '../const.js';
+import {UpdateType, UserAction, EMPTY_GENRE} from '../const.js';
 import {createElement, replace} from '../utils/render.js';
 
 const Controls = {
@@ -10,6 +10,7 @@ const Controls = {
 };
 
 const createGenreTemplate = (genre) => {
+  console.log(genre)
   return `<span class="film-details__genre">${genre}</span>`;
 };
 
@@ -54,7 +55,13 @@ const createFilmDetailsTemplate = (film) => {
     alternativeTitle
   } = film;
 
-  const genreList = generateTemplate(genres, createGenreTemplate);
+  let genreList;
+  if (genres.length !== 0) {
+    genreList = generateTemplate(genres, createGenreTemplate);
+  } else {
+    genreList = generateTemplate([EMPTY_GENRE], createGenreTemplate);
+  }
+
   const actorsList = actors.join(`, `);
   const writersList = writers.join(`, `);
   const filmReleaseDate = humanizeReleaseDate(releaseDate);

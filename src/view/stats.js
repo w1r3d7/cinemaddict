@@ -1,7 +1,7 @@
 import SmartView from './smart.js';
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {MINUTES_IN_HOUR, StatsFilterType} from '../const.js';
+import {MINUTES_IN_HOUR, StatsFilterType, EMPTY_GENRE} from '../const.js';
 import {userRank} from '../utils/common.js';
 import {statsFilter} from '../utils/stats-filter.js';
 
@@ -21,7 +21,7 @@ const countFilmGenres = (films) => {
   films.forEach((film) => {
     let [mainGenre] = film.genres;
     if (!mainGenre) {
-      mainGenre = ``;
+      mainGenre = EMPTY_GENRE;
     }
     if (!result[mainGenre]) {
       result[mainGenre] = 1;

@@ -1,4 +1,4 @@
-import {DESCRIPTION_MAX_LETTERS} from '../const.js';
+import {DESCRIPTION_MAX_LETTERS, EMPTY_GENRE} from '../const.js';
 import AbstractView from './abstract.js';
 import {humanizeRunTime} from '../utils/common.js';
 
@@ -17,7 +17,7 @@ const createFilmCardTemplate = (film) => {
 
   let [mainGenre] = genres;
   if (!mainGenre) {
-    mainGenre = ``;
+    mainGenre = EMPTY_GENRE;
   }
 
   return `<article class="film-card">
