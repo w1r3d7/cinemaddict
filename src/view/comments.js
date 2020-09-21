@@ -4,7 +4,8 @@ import {commentEmojis, UpdateType, UserAction} from '../const.js';
 import AbstractView from './abstract.js';
 import {createElement, replace} from '../utils/render.js';
 
-const deleteButtonText = `Delete`;
+const DELETE_BUTTON_TEXT = `Delete`;
+const DELETING_BUTTON_TEXT = `Deleting...`;
 
 const createCommentTemplate = (userComment) => {
   const {
@@ -23,7 +24,7 @@ const createCommentTemplate = (userComment) => {
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${author}</span>
                 <span class="film-details__comment-day">${humanizeCommentDate(date)}</span>
-                <button class="film-details__comment-delete" data-id="${id}">${deleteButtonText}</button>
+                <button class="film-details__comment-delete" data-id="${id}">${DELETE_BUTTON_TEXT}</button>
               </p>
             </div>
           </li>`;
@@ -121,12 +122,12 @@ export default class Comments extends AbstractView {
 
     const deleteButtonAction = () => {
       const deleteButton = evt.target;
-      evt.target.textContent = evt.target.textContent !== deleteButtonText ? deleteButtonText : evt.target.textContent;
+      evt.target.textContent = evt.target.textContent !== DELETE_BUTTON_TEXT ? DELETE_BUTTON_TEXT : evt.target.textContent;
       this._shake(deleteButton);
       evt.target.disabled = false;
     };
 
-    evt.target.textContent = `Deleting..`;
+    evt.target.textContent = DELETING_BUTTON_TEXT;
     evt.target.disabled = true;
 
     this._handleViewAction(
@@ -146,6 +147,7 @@ export default class Comments extends AbstractView {
     textArea.disabled = false;
     const emojiList = this.getElement().querySelector(`.film-details__emoji-list`);
     emojiList.innerHTML = createEmojiList(commentEmojis);
+    this._commentEmoji = null;
   }
 
   _changeFormStatus() {

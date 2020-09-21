@@ -58,7 +58,7 @@ export default class Comments {
       case UserAction.CREATE_COMMENT:
         this._api.createComment(this._film, update)
           .then((response) => {
-            this._film.comments = response.comments;
+            this._film.comments = response.comments.map((comment) => comment.id);
             this._handleFilmsViewAction(
                 UserAction.UPDATE_LOCAL_FILM,
                 UpdateType.JUST_DATA,
