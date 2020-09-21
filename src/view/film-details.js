@@ -10,7 +10,6 @@ const Controls = {
 };
 
 const createGenreTemplate = (genre) => {
-  console.log(genre)
   return `<span class="film-details__genre">${genre}</span>`;
 };
 
@@ -153,17 +152,6 @@ export default class FilmDetails extends AbstractView {
     return createFilmDetailsTemplate(this._film);
   }
 
-  _closeFilmDetailsClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.click();
-  }
-
-  setCloseFilmDetailsClickHandler(callback) {
-    this._callback.click = callback;
-    const filmDetailsCloseButton = this.getElement().querySelector(`.film-details__close-btn`);
-    filmDetailsCloseButton.addEventListener(`click`, this._closeFilmDetailsClickHandler);
-  }
-
   _updateControls() {
     const oldControls = this.getElement().querySelector(`.film-details__controls`);
     const newTemplate = createElement(createFilmDetailsControlsTemplate(this._film.isInWatchList, this._film.isViewed, this._film.isFavorited));
@@ -222,5 +210,16 @@ export default class FilmDetails extends AbstractView {
 
   _setInnerHandlers() {
     this._controlsHandlers();
+  }
+
+  _closeFilmDetailsClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
+  }
+
+  setCloseFilmDetailsClickHandler(callback) {
+    this._callback.click = callback;
+    const filmDetailsCloseButton = this.getElement().querySelector(`.film-details__close-btn`);
+    filmDetailsCloseButton.addEventListener(`click`, this._closeFilmDetailsClickHandler);
   }
 }

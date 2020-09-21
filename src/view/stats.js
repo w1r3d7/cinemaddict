@@ -111,7 +111,6 @@ const renderChart = (element, sortedFilms) => {
   });
 };
 
-
 const createStatsTemplate = (filmsViewed, filmsFiltered, topGenre, currentSortType) => {
   return `<section class="statistic">
     <p class="statistic__rank">
@@ -169,11 +168,6 @@ export default class Stats extends SmartView {
     return createStatsTemplate(this._filmsViewed, this._filteredFilms, topGenre, this._currentStatFilter);
   }
 
-  _restoreHandlers() {
-    this._setChart();
-    this.setClickFilterHandler();
-  }
-
   _setChart() {
     this._getFilms();
     if (this._filmsViewedSorted.length) {
@@ -181,6 +175,11 @@ export default class Stats extends SmartView {
     }
   }
 
+  _restoreHandlers() {
+    this._setChart();
+    this.setClickFilterHandler();
+  }
+  
   _filterClickHandler(evt) {
     evt.preventDefault();
     if (this._currentStatFilter === evt.target.textContent) {

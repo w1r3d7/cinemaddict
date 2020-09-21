@@ -73,34 +73,6 @@ export default class Film {
     }
   }
 
-  _addToWatchListHandler() {
-    this._handleViewAction(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign({}, this._film, {isInWatchList: !this._film.isInWatchList})
-    );
-  }
-
-  _markAsWatchedHandler() {
-    this._handleViewAction(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign({}, this._film, {isViewed: !this._film.isViewed})
-    );
-  }
-
-  _markAsFavoriteHandler() {
-    this._handleViewAction(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign({}, this._film, {isFavorited: !this._film.isFavorited})
-    );
-  }
-
-  _filmOpenCardClickHandler() {
-    this._renderFilmDetails(this._film);
-  }
-
   _closeFilmDetails() {
     this._popupState = PopupState.CLOSED;
     removeComponent(this._filmDetailsComponent);
@@ -143,5 +115,33 @@ export default class Film {
         removeComponent(loadingView);
         commentsPresenter.init(this._film);
       });
+  }
+
+  _addToWatchListHandler() {
+    this._handleViewAction(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign({}, this._film, {isInWatchList: !this._film.isInWatchList})
+    );
+  }
+
+  _markAsWatchedHandler() {
+    this._handleViewAction(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign({}, this._film, {isViewed: !this._film.isViewed})
+    );
+  }
+
+  _markAsFavoriteHandler() {
+    this._handleViewAction(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign({}, this._film, {isFavorited: !this._film.isFavorited})
+    );
+  }
+
+  _filmOpenCardClickHandler() {
+    this._renderFilmDetails(this._film);
   }
 }

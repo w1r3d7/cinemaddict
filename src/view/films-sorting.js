@@ -23,6 +23,12 @@ export default class FilmsSorting extends AbstractView {
     return createFilmsSortingTemplate(this._currentSortType);
   }
 
+  _addActiveClass(target) {
+    const sortLinks = this.getElement().querySelectorAll(`.sort__button`);
+    sortLinks.forEach((it) => it.classList.remove(sortButtonActiveClass));
+    target.classList.add(sortButtonActiveClass);
+  }
+
   _clickHandler(evt) {
     if (evt.target.tagName !== `A`) {
       return;
@@ -32,13 +38,7 @@ export default class FilmsSorting extends AbstractView {
     this._callback.click(evt.target.dataset.sortType);
     this._addActiveClass(evt.target);
   }
-
-  _addActiveClass(target) {
-    const sortLinks = this.getElement().querySelectorAll(`.sort__button`);
-    sortLinks.forEach((it) => it.classList.remove(sortButtonActiveClass));
-    target.classList.add(sortButtonActiveClass);
-  }
-
+  
   setClickHandler(callback) {
     this._callback.click = callback;
 

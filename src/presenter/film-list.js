@@ -106,48 +106,7 @@ export default class FilmList {
       this._currentSortType = SortType.BY_DEFAULT;
     }
   }
-
-  _handleViewAction(userAction, updateType, update, callback) {
-    switch (userAction) {
-      case UserAction.UPDATE_FILM:
-        this._api.updateFilm(update)
-          .then((response) => this._filmsModel.updateFilm(updateType, response, callback));
-        break;
-      case UserAction.UPDATE_LOCAL_FILM:
-        this._filmsModel.updateFilm(updateType, update, callback);
-        break;
-      case UserAction.UPDATE_BOARD:
-        this._clearFilmsBoard();
-        this._renderFilmsBoard();
-        break;
-    }
-  }
-
-  _handleModelAction(updateType, update, viewCallback) {
-    switch (updateType) {
-      case UpdateType.INIT:
-        this._isLoading = false;
-        removeComponent(this._loadingComponent);
-        this._renderFilmsBoard();
-        break;
-      case UpdateType.PATCH:
-        if (viewCallback) {
-          viewCallback();
-          return;
-        }
-        this._filmPresenter[update.id].init(update);
-        break;
-      case UpdateType.MINOR:
-        this._clearFilmsBoard();
-        this._renderFilmsBoard();
-        break;
-      case UpdateType.MAJOR:
-        this._clearFilmsBoard({resetRenderedTaskCount: true, resetSortType: true});
-        this._renderFilmsBoard();
-        break;
-    }
-  }
-
+  
   _openOnlyOneFilmPopup() {
     Object.values(this._filmPresenter).forEach((presenter) => {
       presenter.closeAllFilmDetails();
@@ -197,20 +156,6 @@ export default class FilmList {
       case FilmsType.COMMENTED:
         this._commentedFilmPresenter[film.id] = filmPresenter;
         break;
-    }
-  }
-
-  _clickLoadMoreButtonHandler() {
-    const films = this._getFilms();
-    if (this._filmsShowing < films.length) {
-      films.slice(this._filmsShowing, this._filmsShowing + RENDER_FILMS_BY_CLICK_LOAD_MORE).forEach((it) => {
-        this._renderFilm(this._allFilmsContainerElement, it, FilmsType.ALL);
-      });
-      this._filmsShowing += RENDER_FILMS_BY_CLICK_LOAD_MORE;
-    }
-
-    if (this._filmsShowing >= films.length) {
-      removeComponent(this._loadMoreButtonComponent);
     }
   }
 
@@ -282,5 +227,60 @@ export default class FilmList {
 
     this._renderTopRatedFilms();
     this._renderTopCommentedFilms();
+  }
+
+  _clickLoadMoreButtonHandler() {
+    const films = this._getFilms();
+    if (this._filmsShowing < films.length) {
+      films.slice(this._filmsShowing, this._filmsShowing + RENDER_FILMS_BY_CLICK_LOAD_MORE).forEach((it) => {
+        this._renderFilm(this._allFilmsContainerElement, it, FilmsType.ALL);
+      });
+      this._filmsShowing += RENDER_FILMS_BY_CLICK_LOAD_MORE;
+    }
+
+    if (this._filmsShowing >= films.length) {
+      removeComponent(this._loadMoreButtonComponent);
+    }
+  }
+
+  _handleViewAction(userAction, updateType, update, callback) {
+    switch (userAction) {
+      case UserAction.UPDATE_FILM:
+        this._api.updateFilm(update)
+          .then((response) => this._filmsModel.updateFilm(updateType, response, callback));
+        break;
+      case UserAction.UPDATE_LOCAL_FILM:
+        this._filmsModel.updateFilm(updateType, update, callback);
+        break;
+      case UserAction.UPDATE_BOARD:
+        this._clearFilmsBoard();
+        this._renderFilmsBoard();
+        break;
+    }
+  }
+
+  _handleModelAction(updateType, update, viewCallback) {
+    switch (updateType) {
+      case UpdateType.INIT:
+        this._isLoading = false;
+        removeComponent(this._loadingComponent);
+        this._renderFilmsBoard();
+        break;
+      case UpdateType.PATCH:
+        if (viewCallback) {
+          viewCallback();
+          return;
+        }
+        this._filmPresenter[update.id].init(update);
+        break;
+      case UpdateType.MINOR:
+        this._clearFilmsBoard();
+        this._renderFilmsBoard();
+        break;
+      case UpdateType.MAJOR:
+        this._clearFilmsBoard({resetRenderedTaskCount: true, resetSortType: true});
+        this._renderFilmsBoard();
+        break;
+    }
   }
 }

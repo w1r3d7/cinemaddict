@@ -33,7 +33,6 @@ export default class Comments {
     this._commentsModel.deleteObserver(this._handleModelAction);
   }
 
-
   _handleViewAction(userAction, updateType, viewCallback, update, fallback) {
     switch (userAction) {
       case UserAction.DELETE_COMMENT:
