@@ -10,7 +10,6 @@ import {filter} from '../utils/filter.js';
 import LoadingView from '../view/loading.js';
 import TopRatedFilmsView from '../view/top-rated-films.js';
 import TopCommentedFilmsView from '../view/top-commented-films.js';
-import {shuffle} from '../utils/common.js';
 
 const RENDER_FILMS_ON_START = 5;
 const RENDER_FILMS_BY_CLICK_LOAD_MORE = 5;

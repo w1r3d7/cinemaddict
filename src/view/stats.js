@@ -179,7 +179,7 @@ export default class Stats extends SmartView {
     this._setChart();
     this.setClickFilterHandler();
   }
-  
+
   _filterClickHandler(evt) {
     evt.preventDefault();
     if (this._currentStatFilter === evt.target.textContent) {

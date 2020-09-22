@@ -38,7 +38,7 @@ export default class FilmsSorting extends AbstractView {
     this._callback.click(evt.target.dataset.sortType);
     this._addActiveClass(evt.target);
   }
-  
+
   setClickHandler(callback) {
     this._callback.click = callback;
 
