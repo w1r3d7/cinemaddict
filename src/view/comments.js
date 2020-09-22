@@ -88,15 +88,6 @@ export default class Comments extends AbstractView {
     return createCommentsTemplate(this._comments);
   }
 
-  _emojiChangeHandler(evt) {
-    const emoji = evt.target.value;
-    this._commentEmoji = emoji;
-
-    const oldEmoji = this.getElement().querySelector(`.film-details__add-emoji-label`);
-    const newEmoji = createElement(createEmojiTemplate(emoji));
-    replace(oldEmoji, newEmoji);
-  }
-
   _updateComments(response) {
     if (response) {
       this._comments = response;
@@ -107,6 +98,42 @@ export default class Comments extends AbstractView {
     const oldCommentsList = this.getElement().querySelector(`.film-details__comments-list`);
     oldCommentsList.innerHTML = generateTemplate(this._comments, createCommentTemplate);
     this._deleteCommentHandler();
+  }
+
+  _resetCommentForm() {
+    const emoji = this.getElement().querySelector(`.film-details__add-emoji-label`);
+    emoji.innerHTML = ``;
+    const textArea = this.getElement().querySelector(`.film-details__comment-input`);
+    textArea.value = ``;
+    textArea.disabled = false;
+    const emojiList = this.getElement().querySelector(`.film-details__emoji-list`);
+    emojiList.innerHTML = createEmojiList(commentEmojis);
+    this._commentEmoji = null;
+  }
+
+  _changeFormStatus() {
+    const textArea = this.getElement().querySelector(`.film-details__comment-input`);
+    const emojiList = this.getElement().querySelectorAll(`.film-details__emoji-item`);
+
+    const reverseDisableStatus = (element) => {
+      if (element.disabled) {
+        element.disabled = false;
+        return;
+      }
+      element.disabled = true;
+    };
+
+    reverseDisableStatus(textArea);
+    emojiList.forEach((input) => reverseDisableStatus(input));
+  }
+
+  _emojiChangeHandler(evt) {
+    const emoji = evt.target.value;
+    this._commentEmoji = emoji;
+
+    const oldEmoji = this.getElement().querySelector(`.film-details__add-emoji-label`);
+    const newEmoji = createElement(createEmojiTemplate(emoji));
+    replace(oldEmoji, newEmoji);
   }
 
   _deleteCommentClickHandler(evt) {
@@ -137,33 +164,6 @@ export default class Comments extends AbstractView {
         commentId,
         deleteButtonAction
     );
-  }
-
-  _resetCommentForm() {
-    const emoji = this.getElement().querySelector(`.film-details__add-emoji-label`);
-    emoji.innerHTML = ``;
-    const textArea = this.getElement().querySelector(`.film-details__comment-input`);
-    textArea.value = ``;
-    textArea.disabled = false;
-    const emojiList = this.getElement().querySelector(`.film-details__emoji-list`);
-    emojiList.innerHTML = createEmojiList(commentEmojis);
-    this._commentEmoji = null;
-  }
-
-  _changeFormStatus() {
-    const textArea = this.getElement().querySelector(`.film-details__comment-input`);
-    const emojiList = this.getElement().querySelectorAll(`.film-details__emoji-item`);
-
-    const reverseDisableStatus = (element) => {
-      if (element.disabled) {
-        element.disabled = false;
-        return;
-      }
-      element.disabled = true;
-    };
-
-    reverseDisableStatus(textArea);
-    emojiList.forEach((input) => reverseDisableStatus(input));
   }
 
   _sendCommentKeydownHandler(evt) {

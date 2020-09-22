@@ -1,6 +1,6 @@
 import {humanizeRunTime, humanizeReleaseDate, generateTemplate} from '../utils/common.js';
 import AbstractView from './abstract.js';
-import {UpdateType, UserAction} from '../const.js';
+import {UpdateType, UserAction, EMPTY_GENRE} from '../const.js';
 import {createElement, replace} from '../utils/render.js';
 
 const Controls = {
@@ -54,7 +54,13 @@ const createFilmDetailsTemplate = (film) => {
     alternativeTitle
   } = film;
 
-  const genreList = generateTemplate(genres, createGenreTemplate);
+  let genreList;
+  if (genres.length !== 0) {
+    genreList = generateTemplate(genres, createGenreTemplate);
+  } else {
+    genreList = generateTemplate([EMPTY_GENRE], createGenreTemplate);
+  }
+
   const actorsList = actors.join(`, `);
   const writersList = writers.join(`, `);
   const filmReleaseDate = humanizeReleaseDate(releaseDate);
@@ -146,17 +152,6 @@ export default class FilmDetails extends AbstractView {
     return createFilmDetailsTemplate(this._film);
   }
 
-  _closeFilmDetailsClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.click();
-  }
-
-  setCloseFilmDetailsClickHandler(callback) {
-    this._callback.click = callback;
-    const filmDetailsCloseButton = this.getElement().querySelector(`.film-details__close-btn`);
-    filmDetailsCloseButton.addEventListener(`click`, this._closeFilmDetailsClickHandler);
-  }
-
   _updateControls() {
     const oldControls = this.getElement().querySelector(`.film-details__controls`);
     const newTemplate = createElement(createFilmDetailsControlsTemplate(this._film.isInWatchList, this._film.isViewed, this._film.isFavorited));
@@ -215,5 +210,16 @@ export default class FilmDetails extends AbstractView {
 
   _setInnerHandlers() {
     this._controlsHandlers();
+  }
+
+  _closeFilmDetailsClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
+  }
+
+  setCloseFilmDetailsClickHandler(callback) {
+    this._callback.click = callback;
+    const filmDetailsCloseButton = this.getElement().querySelector(`.film-details__close-btn`);
+    filmDetailsCloseButton.addEventListener(`click`, this._closeFilmDetailsClickHandler);
   }
 }

@@ -22,12 +22,12 @@ export default class Stats {
 
   }
 
-  _handleModelStatsAction() {
-    this.init();
-  }
-
   destroy() {
     removeComponent(this._statsComponent);
     this._filmsModel.deleteObserver(this._handleModelStatsAction);
+  }
+
+  _handleModelStatsAction() {
+    this.init();
   }
 }

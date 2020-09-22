@@ -41,40 +41,6 @@ export default class SiteMenu {
     removeComponent(prevSiteMenuComponent);
   }
 
-  _handleStatsClick() {
-    if (!this._filmsPresenter.isDestroy) {
-      this._statsPresenter = new StatsPresenter(this._siteMenuContainer, this._filmsModel);
-      this._replaceFilmsToStats();
-    }
-  }
-
-  _handleModelEvent() {
-    this.init();
-  }
-
-  _replaceFilmsToStats() {
-    this._filmsPresenter.destroy();
-    this._statsPresenter.init();
-  }
-
-  _replaceStatsToFilms() {
-    if (this._filmsPresenter.isDestroy) {
-      this._statsPresenter.destroy();
-      this._filmsPresenter.init();
-    }
-    this._filmsPresenter.isDestroy = false;
-  }
-
-  _handleFilterTypeChange(filterType) {
-    if (this._currentFilter === filterType && !this._filmsPresenter.isDestroy) {
-      return;
-    }
-
-    this._replaceStatsToFilms();
-
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-  }
-
   _getFilters() {
     const films = this._filmsModel.getFilms();
 
@@ -100,5 +66,39 @@ export default class SiteMenu {
         count: filter[FilterType.FAVORITES](films).length
       },
     ];
+  }
+
+  _replaceFilmsToStats() {
+    this._filmsPresenter.destroy();
+    this._statsPresenter.init();
+  }
+
+  _replaceStatsToFilms() {
+    if (this._filmsPresenter.isDestroy) {
+      this._statsPresenter.destroy();
+      this._filmsPresenter.init();
+    }
+    this._filmsPresenter.isDestroy = false;
+  }
+
+  _handleFilterTypeChange(filterType) {
+    if (this._currentFilter === filterType && !this._filmsPresenter.isDestroy) {
+      return;
+    }
+
+    this._replaceStatsToFilms();
+
+    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+  }
+
+  _handleStatsClick() {
+    if (!this._filmsPresenter.isDestroy) {
+      this._statsPresenter = new StatsPresenter(this._siteMenuContainer, this._filmsModel);
+      this._replaceFilmsToStats();
+    }
+  }
+
+  _handleModelEvent() {
+    this.init();
   }
 }

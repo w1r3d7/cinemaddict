@@ -14,9 +14,10 @@ const PopupState = {
 };
 
 export default class Film {
-  constructor(container, handleViewAction, openOnlyOneFilmPopup, api) {
+  constructor(container, handleViewAction, openOnlyOneFilmPopup, api, siteMainElement) {
     this._filmContainer = container;
     this._api = api;
+    this._siteMainElement = siteMainElement;
     this._handleViewAction = handleViewAction;
     this._popupState = PopupState.CLOSED;
     this._filmCardComponent = null;
@@ -38,8 +39,6 @@ export default class Film {
 
     this._filmCardComponent = new FilmCardView(this._film);
     this._filmDetailsComponent = new FilmDetailsView(this._film, this._handleViewAction);
-
-    this._filmsListContainer = this._filmContainer.parentElement;
 
     this._filmCardComponent.setCardOpenClickHandler(this._filmOpenCardClickHandler);
     this._filmCardComponent.setAddToWatchListClickHandler(this._addToWatchListHandler);
@@ -74,34 +73,6 @@ export default class Film {
     }
   }
 
-  _addToWatchListHandler() {
-    this._handleViewAction(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign({}, this._film, {isInWatchList: !this._film.isInWatchList})
-    );
-  }
-
-  _markAsWatchedHandler() {
-    this._handleViewAction(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign({}, this._film, {isViewed: !this._film.isViewed})
-    );
-  }
-
-  _markAsFavoriteHandler() {
-    this._handleViewAction(
-        UserAction.UPDATE_FILM,
-        UpdateType.MINOR,
-        Object.assign({}, this._film, {isFavorited: !this._film.isFavorited})
-    );
-  }
-
-  _filmOpenCardClickHandler() {
-    this._renderFilmDetails(this._film);
-  }
-
   _closeFilmDetails() {
     this._popupState = PopupState.CLOSED;
     removeComponent(this._filmDetailsComponent);
@@ -128,7 +99,7 @@ export default class Film {
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
-    render(this._filmsListContainer, this._filmDetailsComponent);
+    render(this._siteMainElement, this._filmDetailsComponent);
     const formDetailsBottomContainer = this._filmDetailsComponent.getElement().querySelector(`.form-details__bottom-container`);
     const loadingView = new LoadingView();
     render(formDetailsBottomContainer, loadingView);
@@ -144,5 +115,33 @@ export default class Film {
         removeComponent(loadingView);
         commentsPresenter.init(this._film);
       });
+  }
+
+  _addToWatchListHandler() {
+    this._handleViewAction(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign({}, this._film, {isInWatchList: !this._film.isInWatchList})
+    );
+  }
+
+  _markAsWatchedHandler() {
+    this._handleViewAction(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign({}, this._film, {isViewed: !this._film.isViewed})
+    );
+  }
+
+  _markAsFavoriteHandler() {
+    this._handleViewAction(
+        UserAction.UPDATE_FILM,
+        UpdateType.MINOR,
+        Object.assign({}, this._film, {isFavorited: !this._film.isFavorited})
+    );
+  }
+
+  _filmOpenCardClickHandler() {
+    this._renderFilmDetails(this._film);
   }
 }
