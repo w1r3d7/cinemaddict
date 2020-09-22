@@ -10,6 +10,7 @@ import {filter} from '../utils/filter.js';
 import LoadingView from '../view/loading.js';
 import TopRatedFilmsView from '../view/top-rated-films.js';
 import TopCommentedFilmsView from '../view/top-commented-films.js';
+import {shuffle} from '../utils/common.js';
 
 const RENDER_FILMS_ON_START = 5;
 const RENDER_FILMS_BY_CLICK_LOAD_MORE = 5;
@@ -91,8 +92,13 @@ export default class FilmList {
 
     removeComponent(this._filmsSortingComponent);
     removeComponent(this._noFilmsViewComponent);
-    removeComponent(this._topRatedFilmsView);
-    removeComponent(this._topCommentedFilmsView);
+    if (this._topRatedFilmsView) {
+      removeComponent(this._topRatedFilmsView);
+    }
+    if (this._topCommentedFilmsView) {
+      removeComponent(this._topCommentedFilmsView);
+    }
+
 
     if (this._loadMoreButtonComponent) {
       removeComponent(this._loadMoreButtonComponent);
@@ -106,7 +112,7 @@ export default class FilmList {
       this._currentSortType = SortType.BY_DEFAULT;
     }
   }
-  
+
   _openOnlyOneFilmPopup() {
     Object.values(this._filmPresenter).forEach((presenter) => {
       presenter.closeAllFilmDetails();
@@ -171,9 +177,13 @@ export default class FilmList {
   }
 
   _renderTopRatedFilms() {
-    const currentTopFilms = this._filmsModel.getFilms().slice().sort((a, b) => b.rating - a.rating).slice(0, RENDER_FILMS_IN_TOP);
-
-    if (currentTopFilms.some((film) => film.rating !== 0)) {
+    const currentTopFilms = this._filmsModel
+                              .getFilms()
+                              .slice()
+                              .sort((a, b) => b.rating - a.rating)
+                              .filter((film) => film.rating > 0)
+                              .slice(0, RENDER_FILMS_IN_TOP);
+    if (currentTopFilms.length) {
       this._topRatedFilmsView = new TopRatedFilmsView();
       render(this._filmsListContainer, this._topRatedFilmsView);
 
@@ -186,8 +196,13 @@ export default class FilmList {
   }
 
   _renderTopCommentedFilms() {
-    const currentTopFilms = this._filmsModel.getFilms().slice().sort((a, b) => b.comments.length - a.comments.length).slice(0, RENDER_FILMS_IN_TOP);
-    if (currentTopFilms.length !== 0) {
+    let currentTopFilms = this._filmsModel
+                                .getFilms()
+                                .slice().sort((a, b) => b.comments.length - a.comments.length)
+                                .filter((film) => film.comments.length > 0)
+                                .slice(0, RENDER_FILMS_IN_TOP);
+
+    if (currentTopFilms.length) {
       this._topCommentedFilmsView = new TopCommentedFilmsView();
       render(this._filmsListContainer, this._topCommentedFilmsView);
 
