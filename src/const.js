@@ -8,6 +8,12 @@ export const EMOJIS = [
   `angry`,
 ];
 
+export const UserRank = {
+  FAN: `fan`,
+  NOVICE: `novice`,
+  MOVIE_BUFF: `movie buff`,
+};
+
 export const RenderPlace = {
   BEFOREEND: `beforeend`,
   AFTEREND: `afterend`,

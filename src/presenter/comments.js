@@ -16,7 +16,7 @@ export default class Comments {
 
   init(film) {
     if (this._commentsView !== null) {
-      this.destroy();
+      this._destroy();
     }
 
     this._film = film;
@@ -28,7 +28,7 @@ export default class Comments {
     render(this._container, this._commentsView);
   }
 
-  destroy() {
+  _destroy() {
     removeComponent(this._commentsView);
     this._commentsModel.deleteObserver(this._handleModelAction);
   }

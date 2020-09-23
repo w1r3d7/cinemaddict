@@ -1,5 +1,5 @@
 import moment from 'moment';
-import {MINUTES_IN_HOUR} from '../const.js';
+import {MINUTES_IN_HOUR, UserRank} from '../const.js';
 
 export const humanizeCommentDate = (date) => moment(date).fromNow();
 
@@ -13,15 +13,21 @@ export const humanizeRunTime = (runTime) => {
   return time.format(`mm[m]`);
 };
 
+const FilmsNumber = {
+  NOVICE: 1,
+  FAN: 10,
+  MOVIE_BUFF: 20,
+};
+
 export const getUserRank = (filmsViewed) => {
   let rank = ``;
 
-  if (filmsViewed > 0 && filmsViewed < 11) {
-    rank = `novice`;
-  } else if (filmsViewed > 10 && filmsViewed < 21) {
-    rank = `fan`;
-  } else if (filmsViewed > 20) {
-    rank = `movie buff`;
+  if (filmsViewed >= FilmsNumber.NOVICE && filmsViewed <= FilmsNumber.FAN) {
+    rank = UserRank.NOVICE;
+  } else if (filmsViewed > FilmsNumber.FAN && filmsViewed <= FilmsNumber.MOVIE_BUFF) {
+    rank = UserRank.FAN;
+  } else if (filmsViewed > FilmsNumber.MOVIE_BUFF) {
+    rank = UserRank.MOVIE_BUFF;
   }
 
   return rank;

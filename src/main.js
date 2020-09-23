@@ -1,5 +1,4 @@
 import {render} from './utils/render.js';
-import UserProfileView from './view/user-profile.js';
 import FilmsListPresenter from './presenter/film-list.js';
 import FooterStatisticsView from './view/footer-statistics.js';
 import FilmsModel from './model/films.js';
@@ -9,6 +8,7 @@ import Api from './api/api.js';
 import {UpdateType} from './const.js';
 import Store from './api/store.js';
 import Provider from './api/provider.js';
+import UserProfilePresenter from './presenter/user-profile.js';
 
 const URL = `https://12.ecmascript.pages.academy/cinemaddict`;
 const AUTH = `Basic soto4ka`;
@@ -28,6 +28,7 @@ const apiWithProvider = new Provider(api, store);
 const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
 
+const userProfilePresenter = new UserProfilePresenter(siteHeaderElement, filmsModel);
 const filmsListPresenter = new FilmsListPresenter(siteMainElement, filmsModel, filterModel, apiWithProvider);
 const siteMenuPresenter = new SiteMenuPresenter(siteMainElement, filterModel, filmsModel, filmsListPresenter);
 
@@ -37,13 +38,12 @@ filmsListPresenter.init();
 apiWithProvider.getFilms()
   .then((films) => {
     filmsModel.setFilms(UpdateType.INIT, films);
-    const filmsViewed = filmsModel.getFilms().filter((film) => film.isViewed).length;
-    render(siteHeaderElement, new UserProfileView(filmsViewed));
+    userProfilePresenter.init();
     render(siteFooterElement, new FooterStatisticsView(filmsModel.getFilms().length));
   })
   .catch(() => {
     filmsModel.setFilms(UpdateType.INIT, []);
-    render(siteHeaderElement, new UserProfileView(filmsModel.getFilms()));
+    userProfilePresenter.init();
     render(siteFooterElement, new FooterStatisticsView(filmsModel.getFilms().length));
   });
 
