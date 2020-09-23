@@ -15,25 +15,6 @@ export default class Smart extends AbstractView {
     prevElement = null;
   }
 
-  updateData(update, updateDataOnly) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-        {},
-        this._data,
-        update
-    );
-
-    if (updateDataOnly) {
-      return;
-    }
-
-    this.updateElement();
-    this._restoreHandlers();
-  }
-
   _restoreHandlers() {
     throw new Error(`This method not implemented!`);
   }

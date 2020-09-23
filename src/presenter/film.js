@@ -29,6 +29,7 @@ export default class Film {
     this._markAsWatchedHandler = this._markAsWatchedHandler.bind(this);
     this._markAsFavoriteHandler = this._markAsFavoriteHandler.bind(this);
     this.closeAllFilmDetails = this.closeAllFilmDetails.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
   init(film) {
@@ -74,6 +75,7 @@ export default class Film {
   }
 
   _closeFilmDetails() {
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
     this._popupState = PopupState.CLOSED;
     removeComponent(this._filmDetailsComponent);
     this._handleViewAction(
@@ -85,18 +87,11 @@ export default class Film {
     this._openOnlyOneFilmPopup();
     this._popupState = PopupState.OPENED;
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === ESCAPE_KEY) {
-        this._closeFilmDetails();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    document.addEventListener(`keydown`, onEscKeyDown);
+    document.addEventListener(`keydown`, this._escKeyDownHandler);
 
     this._filmDetailsComponent.setCloseFilmDetailsClickHandler(() => {
       this._closeFilmDetails();
-      document.removeEventListener(`keydown`, onEscKeyDown);
+      document.removeEventListener(`keydown`, this._escKeyDownHandler);
     });
 
     render(this._siteMainElement, this._filmDetailsComponent);
@@ -129,7 +124,7 @@ export default class Film {
     this._handleViewAction(
         UserAction.UPDATE_FILM,
         UpdateType.MINOR,
-        Object.assign({}, this._film, {isViewed: !this._film.isViewed})
+        Object.assign({}, this._film, {isViewed: !this._film.isViewed, watchingDate: new Date()})
     );
   }
 
@@ -143,5 +138,11 @@ export default class Film {
 
   _filmOpenCardClickHandler() {
     this._renderFilmDetails(this._film);
+  }
+
+  _escKeyDownHandler(evt) {
+    if (evt.key === ESCAPE_KEY) {
+      this._closeFilmDetails();
+    }
   }
 }

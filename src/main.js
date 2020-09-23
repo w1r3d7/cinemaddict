@@ -16,17 +16,17 @@ const STORE_PREFIX = `cinemaddict-localstorage`;
 const STORE_VER = `v1`;
 const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
+const siteBodyElement = document.querySelector(`body`);
+const siteHeaderElement = siteBodyElement.querySelector(`.header`);
+const siteMainElement = siteBodyElement.querySelector(`.main`);
+const siteFooterElement = siteBodyElement.querySelector(`.footer`);
+
 const api = new Api(URL, AUTH);
 const store = new Store(STORE_NAME, window.localStorage);
 const apiWithProvider = new Provider(api, store);
 
 const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
-
-const siteBodyElement = document.querySelector(`body`);
-const siteHeaderElement = siteBodyElement.querySelector(`.header`);
-const siteMainElement = siteBodyElement.querySelector(`.main`);
-const siteFooterElement = siteBodyElement.querySelector(`.footer`);
 
 const filmsListPresenter = new FilmsListPresenter(siteMainElement, filmsModel, filterModel, apiWithProvider);
 const siteMenuPresenter = new SiteMenuPresenter(siteMainElement, filterModel, filmsModel, filmsListPresenter);
@@ -49,12 +49,7 @@ apiWithProvider.getFilms()
 
 
 window.addEventListener(`load`, () => {
-  navigator.serviceWorker.register(`/sw.js`)
-    .then(() => {
-      console.log(`ServiceWorker available`); // eslint-disable-line
-    }).catch(() => {
-      console.error(`ServiceWorker isn't available`); // eslint-disable-line
-    });
+  navigator.serviceWorker.register(`/sw.js`);
 });
 
 window.addEventListener(`online`, () => {

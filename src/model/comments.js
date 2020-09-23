@@ -1,4 +1,5 @@
 import Observer from '../utils/observer.js';
+import {findItemAndRemove} from '../utils/common.js';
 
 export default class Comments extends Observer {
   constructor() {
@@ -22,15 +23,7 @@ export default class Comments extends Observer {
   }
 
   deleteComment(updateType, callback, deletedCommentId) {
-    const itemIndex = this._comments.findIndex((it) => it.id === deletedCommentId);
-    if (itemIndex === -1) {
-      throw new Error(`Comments can't delete!`);
-    }
-
-    this._comments = [
-      ...this._comments.slice(0, itemIndex),
-      ...this._comments.slice(itemIndex + 1),
-    ];
+    this._comments = findItemAndRemove(this._comments, deletedCommentId);
 
     this._notify(updateType, callback);
   }

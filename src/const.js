@@ -1,8 +1,7 @@
 export const DESCRIPTION_MAX_LETTERS = 139;
 export const MINUTES_IN_HOUR = 60;
 export const EMPTY_GENRE = `No genre`;
-
-export const commentEmojis = [
+export const EMOJIS = [
   `smile`,
   `sleeping`,
   `puke`,

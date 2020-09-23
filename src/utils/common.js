@@ -13,7 +13,7 @@ export const humanizeRunTime = (runTime) => {
   return time.format(`mm[m]`);
 };
 
-export const userRank = (filmsViewed) => {
+export const getUserRank = (filmsViewed) => {
   let rank = ``;
 
   if (filmsViewed > 0 && filmsViewed < 11) {
@@ -32,4 +32,19 @@ export const generateTemplate = (data, template) => {
     return ``;
   }
   return data.map((it) => template(it)).join(``);
+};
+
+export const findItemAndRemove = (initialList, deletedId) => {
+  let list = initialList.slice();
+  const itemIndex = list.findIndex((it) => it.id === deletedId);
+  if (itemIndex === -1) {
+    throw new Error(`Comments can't delete!`);
+  }
+
+  list = [
+    ...list.slice(0, itemIndex),
+    ...list.slice(itemIndex + 1),
+  ];
+
+  return list;
 };

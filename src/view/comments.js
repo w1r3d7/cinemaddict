@@ -1,6 +1,6 @@
 import he from "he";
-import {humanizeCommentDate, generateTemplate} from '../utils/common.js';
-import {commentEmojis, UpdateType, UserAction} from '../const.js';
+import {humanizeCommentDate, generateTemplate, findItemAndRemove} from '../utils/common.js';
+import {EMOJIS, UpdateType, UserAction} from '../const.js';
 import AbstractView from './abstract.js';
 import {createElement, replace} from '../utils/render.js';
 
@@ -49,7 +49,7 @@ const createEmojiList = (emojiList) => {
 
 const createCommentsTemplate = (comments) => {
   const commentsList = generateTemplate(comments, createCommentTemplate);
-  const emojis = createEmojiList(commentEmojis);
+  const emojis = createEmojiList(EMOJIS);
 
   return `<section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
@@ -97,7 +97,7 @@ export default class Comments extends AbstractView {
     commentsCounter.textContent = String(this._comments.length);
     const oldCommentsList = this.getElement().querySelector(`.film-details__comments-list`);
     oldCommentsList.innerHTML = generateTemplate(this._comments, createCommentTemplate);
-    this._deleteCommentHandler();
+    this._deleteComment();
   }
 
   _resetCommentForm() {
@@ -107,13 +107,13 @@ export default class Comments extends AbstractView {
     textArea.value = ``;
     textArea.disabled = false;
     const emojiList = this.getElement().querySelector(`.film-details__emoji-list`);
-    emojiList.innerHTML = createEmojiList(commentEmojis);
+    emojiList.innerHTML = createEmojiList(EMOJIS);
     this._commentEmoji = null;
   }
 
   _changeFormStatus() {
     const textArea = this.getElement().querySelector(`.film-details__comment-input`);
-    const emojiList = this.getElement().querySelectorAll(`.film-details__emoji-item`);
+    const emojisList = this.getElement().querySelectorAll(`.film-details__emoji-item`);
 
     const reverseDisableStatus = (element) => {
       if (element.disabled) {
@@ -124,7 +124,26 @@ export default class Comments extends AbstractView {
     };
 
     reverseDisableStatus(textArea);
-    emojiList.forEach((input) => reverseDisableStatus(input));
+    emojisList.forEach((input) => reverseDisableStatus(input));
+  }
+
+  _deleteComment() {
+    const commentsDeleteButtons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
+    if (commentsDeleteButtons) {
+      commentsDeleteButtons.forEach((deleteButton) => deleteButton.addEventListener(`click`, this._deleteCommentClickHandler));
+    }
+  }
+
+  _setInnerHandlers() {
+    this._deleteComment();
+    this.getElement().querySelector(`.film-details__emoji-list`)
+      .addEventListener(`change`, this._emojiChangeHandler);
+    this.getElement().querySelector(`.film-details__comment-input`)
+      .addEventListener(`keydown`, this._sendCommentKeydownHandler);
+    this.getElement().querySelector(`.film-details__comment-input`)
+      .addEventListener(`keydown`, (evt) => {
+        evt.stopPropagation();
+      });
   }
 
   _emojiChangeHandler(evt) {
@@ -138,14 +157,8 @@ export default class Comments extends AbstractView {
 
   _deleteCommentClickHandler(evt) {
     evt.preventDefault();
-
     const commentId = evt.target.dataset.id;
-
-    const commentIndex = this._comments.findIndex((comment) => comment.id === commentId);
-    this._comments = [
-      ...this._comments.slice(0, commentIndex),
-      ...this._comments.slice(commentIndex + 1),
-    ];
+    this._comments = findItemAndRemove(this._comments, commentId);
 
     const deleteButtonAction = () => {
       const deleteButton = evt.target;
@@ -196,24 +209,5 @@ export default class Comments extends AbstractView {
       );
 
     }
-  }
-
-  _deleteCommentHandler() {
-    const commentsDeleteButtons = this.getElement().querySelectorAll(`.film-details__comment-delete`);
-    if (commentsDeleteButtons) {
-      commentsDeleteButtons.forEach((deleteButton) => deleteButton.addEventListener(`click`, this._deleteCommentClickHandler));
-    }
-  }
-
-  _setInnerHandlers() {
-    this._deleteCommentHandler();
-    this.getElement().querySelector(`.film-details__emoji-list`)
-      .addEventListener(`change`, this._emojiChangeHandler);
-    this.getElement().querySelector(`.film-details__comment-input`)
-      .addEventListener(`keydown`, this._sendCommentKeydownHandler);
-    this.getElement().querySelector(`.film-details__comment-input`)
-      .addEventListener(`keydown`, (evt) => {
-        evt.stopPropagation();
-      });
   }
 }

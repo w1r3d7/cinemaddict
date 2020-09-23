@@ -67,7 +67,6 @@ export default class Provider {
     return Promise.reject(`offline`);
   }
 
-
   sync() {
     if (Provider.isOnline()) {
       const storeFilms = Object.values(this._store.getItems());

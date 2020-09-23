@@ -54,12 +54,9 @@ const createFilmDetailsTemplate = (film) => {
     alternativeTitle
   } = film;
 
-  let genreList;
-  if (genres.length !== 0) {
-    genreList = generateTemplate(genres, createGenreTemplate);
-  } else {
-    genreList = generateTemplate([EMPTY_GENRE], createGenreTemplate);
-  }
+  const genreList = genres.length !== 0
+    ? generateTemplate(genres, createGenreTemplate)
+    : generateTemplate([EMPTY_GENRE], createGenreTemplate);
 
   const actorsList = actors.join(`, `);
   const writersList = writers.join(`, `);
@@ -152,10 +149,29 @@ export default class FilmDetails extends AbstractView {
     return createFilmDetailsTemplate(this._film);
   }
 
+  setCloseFilmDetailsClickHandler(callback) {
+    this._callback.click = callback;
+    const filmDetailsCloseButton = this.getElement().querySelector(`.film-details__close-btn`);
+    filmDetailsCloseButton.addEventListener(`click`, this._closeFilmDetailsClickHandler);
+  }
+
   _updateControls() {
     const oldControls = this.getElement().querySelector(`.film-details__controls`);
     const newTemplate = createElement(createFilmDetailsControlsTemplate(this._film.isInWatchList, this._film.isViewed, this._film.isFavorited));
     replace(oldControls, newTemplate);
+  }
+
+  _setInnerHandlers() {
+    this._controlsHandlers();
+  }
+
+  _controlsHandlers() {
+    this.getElement().querySelector(`input[name=watchlist]`)
+      .addEventListener(`click`, this._addToWatchListHandler);
+    this.getElement().querySelector(`input[name=watched]`)
+      .addEventListener(`click`, this._addToWatchedListHandler);
+    this.getElement().querySelector(`input[name=favorite]`)
+      .addEventListener(`click`, this._addToFavoriteListHandler);
   }
 
   _controlHandler(control) {
@@ -166,8 +182,11 @@ export default class FilmDetails extends AbstractView {
       [control]: !this._film[control],
     };
 
-    this._film[control] = !this._film[control];
+    if (control === `isViewed`) {
+      controls.watchingDate = new Date();
+    }
 
+    this._film[control] = !this._film[control];
 
     const updateControls = () => {
       const oldControls = this.getElement().querySelector(`.film-details__controls`);
@@ -199,27 +218,8 @@ export default class FilmDetails extends AbstractView {
     this._controlHandler(Controls.IS_FAVORITED);
   }
 
-  _controlsHandlers() {
-    this.getElement().querySelector(`input[name=watchlist]`)
-      .addEventListener(`click`, this._addToWatchListHandler);
-    this.getElement().querySelector(`input[name=watched]`)
-      .addEventListener(`click`, this._addToWatchedListHandler);
-    this.getElement().querySelector(`input[name=favorite]`)
-      .addEventListener(`click`, this._addToFavoriteListHandler);
-  }
-
-  _setInnerHandlers() {
-    this._controlsHandlers();
-  }
-
   _closeFilmDetailsClickHandler(evt) {
     evt.preventDefault();
     this._callback.click();
-  }
-
-  setCloseFilmDetailsClickHandler(callback) {
-    this._callback.click = callback;
-    const filmDetailsCloseButton = this.getElement().querySelector(`.film-details__close-btn`);
-    filmDetailsCloseButton.addEventListener(`click`, this._closeFilmDetailsClickHandler);
   }
 }

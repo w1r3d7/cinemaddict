@@ -2,8 +2,10 @@ import SmartView from './smart.js';
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {MINUTES_IN_HOUR, StatsFilterType, EMPTY_GENRE} from '../const.js';
-import {userRank} from '../utils/common.js';
+import {getUserRank} from '../utils/common.js';
 import {statsFilter} from '../utils/stats-filter.js';
+
+const BAR_HEIGHT = 50;
 
 const totalDurationTemplate = (films) => {
   const totalMinutes = films.reduce((acc, item) => {
@@ -47,7 +49,6 @@ const createSortTemplate = (currentSortType) => {
 };
 
 const renderChart = (element, sortedFilms) => {
-  const BAR_HEIGHT = 50;
   const statisticCtx = element.querySelector(`.statistic__chart`);
   const genres = sortedFilms.map(([it]) => it);
   const genresCount = sortedFilms.map(([, it]) => it);
@@ -116,7 +117,7 @@ const createStatsTemplate = (filmsViewed, filmsFiltered, topGenre, currentSortTy
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">${userRank(filmsViewed.length)}</span>
+      <span class="statistic__rank-label">${getUserRank(filmsViewed.length)}</span>
     </p>
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -155,11 +156,6 @@ export default class Stats extends SmartView {
     this._setChart();
   }
 
-  _getFilms() {
-    this._filteredFilms = statsFilter[this._currentStatFilter](this._filmsViewed);
-    this._filmsViewedSorted = sortFilmsGenres(this._filteredFilms);
-  }
-
   _getTemplate() {
     let topGenre = ``;
     if (this._filmsViewedSorted.length) {
@@ -168,16 +164,26 @@ export default class Stats extends SmartView {
     return createStatsTemplate(this._filmsViewed, this._filteredFilms, topGenre, this._currentStatFilter);
   }
 
+  _restoreHandlers() {
+    this._setChart();
+    this.setClickFilterHandler();
+  }
+
+  setClickFilterHandler() {
+    const filters = this.getElement().querySelectorAll(`.statistic__filters-label`);
+    filters.forEach((filter) => filter.addEventListener(`click`, this._filterClickHandler));
+  }
+
+  _getFilms() {
+    this._filteredFilms = statsFilter[this._currentStatFilter](this._filmsViewed);
+    this._filmsViewedSorted = sortFilmsGenres(this._filteredFilms);
+  }
+
   _setChart() {
     this._getFilms();
     if (this._filmsViewedSorted.length) {
       renderChart(this.getElement(), this._filmsViewedSorted);
     }
-  }
-
-  _restoreHandlers() {
-    this._setChart();
-    this.setClickFilterHandler();
   }
 
   _filterClickHandler(evt) {
@@ -189,10 +195,5 @@ export default class Stats extends SmartView {
     this._getFilms();
     this.updateElement();
     this._restoreHandlers();
-  }
-
-  setClickFilterHandler() {
-    const filters = this.getElement().querySelectorAll(`.statistic__filters-label`);
-    filters.forEach((filter) => filter.addEventListener(`click`, this._filterClickHandler));
   }
 }
