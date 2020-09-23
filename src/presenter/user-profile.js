@@ -1,7 +1,7 @@
 import UserProfileView from '../view/user-profile.js';
-import {removeComponent, render} from "../utils/render";
-import {FilterType, UpdateType} from "../const";
-import {filter} from "../utils/filter";
+import {removeComponent, render} from '../utils/render.js';
+import {FilterType, UpdateType} from '../const.js';
+import {filter} from '../utils/filter.js';
 
 export default class UserProfile {
   constructor(container, filmsModel) {
