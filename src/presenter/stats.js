@@ -12,7 +12,7 @@ export default class Stats {
 
   init() {
     if (this._statsComponent !== null) {
-      this._destroy();
+      this.destroy();
     }
     this._filmsModel.addObserver(this._handleModelStatsAction);
     const viewedFilms = this._films.filter((film) => film.isViewed);
@@ -22,7 +22,7 @@ export default class Stats {
 
   }
 
-  _destroy() {
+  destroy() {
     removeComponent(this._statsComponent);
     this._filmsModel.deleteObserver(this._handleModelStatsAction);
   }
